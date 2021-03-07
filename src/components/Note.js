@@ -1,35 +1,34 @@
-import { Checkbox, IconButton, ListItem, Typography} from "@material-ui/core";
-import CloseIcon from "@material-ui/icons/Close";
 import React from "react";
-
+import Card from "react-bootstrap/Card";
+import Button from "react-bootstrap/Button";
 
 function Note({ note, toggleComplete, removeNote }) {
-    function handleCheckboxClick() {
-        toggleComplete(note.id);
-    }
+  function handleCheckboxClick() {
+    toggleComplete(note.id);
+  }
 
-    function handleRemoveClick() {
-        removeNote(note.id);
-    }
-    return (
-        <ListItem style={{ display: "flex" }}>
-            <Checkbox
-                checked={note.completed}
-                onClick={handleCheckboxClick} 
-            />
-            <Typography
-                variant="body1"
-                style={{
-                    textDecoration: note.completed ? "line_through": null
-                }}
-            >
-                {note.task}
-            </Typography>
-            <IconButton onClick={handleRemoveClick}>
-                <CloseIcon />
-            </IconButton>
-        </ListItem>
-    );
+  function handleRemoveClick() {
+    removeNote(note.id);
+  }
+
+  return (
+    <Card>
+      <Card.Header>{note.name}</Card.Header>
+      <Card.Body>
+        <Card.Text>{note.contents}</Card.Text>
+        <Button
+          variant="primary"
+          onClick={handleCheckboxClick}
+          disabled={note.completed}
+        >
+          Complete
+        </Button>
+        <Button variant="link" onClick={handleRemoveClick}>
+          Remove
+        </Button>
+      </Card.Body>
+    </Card>
+  );
 }
 
-export default Note
+export default Note;
