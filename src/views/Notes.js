@@ -5,7 +5,7 @@ function Notes() {
   const [notes, setNotes] = useState([]);
 
   useEffect(() => {
-    fetch("/notes").then((response) =>
+    fetch(process.env.REACT_APP_API_URL + "/notes").then((response) =>
       response.json().then((data) => {
         setNotes(data);
       })

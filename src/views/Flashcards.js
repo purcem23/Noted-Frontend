@@ -5,9 +5,8 @@ function Flashcards() {
   const [flashcards, setFlashcards] = useState([]);
 
   useEffect(() => {
-    fetch("/flashcards").then((response) =>
+    fetch(process.env.REACT_APP_API_URL + "/flashcards").then((response) =>
       response.json().then((data) => {
-        console.log(data);
         setFlashcards(data);
       })
     );
