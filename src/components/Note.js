@@ -6,7 +6,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { CheckCircle, Circle } from "react-bootstrap-icons";
 
-function Note({ note, toggleComplete, toggleIncomplete, removeNote }) {
+function Note({ note, toggleComplete, toggleIncomplete, deleteNote }) {
   const history = useHistory();
 
   function handleCompleteClick(event) {
@@ -19,9 +19,9 @@ function Note({ note, toggleComplete, toggleIncomplete, removeNote }) {
     toggleIncomplete(note);
   }
 
-  function handleRemoveClick(event) {
+  function handleDeleteClick(event) {
     event.stopPropagation();
-    removeNote(note.id);
+    deleteNote(note);
   }
 
   function handleViewClick() {
@@ -69,7 +69,7 @@ function Note({ note, toggleComplete, toggleIncomplete, removeNote }) {
             Mark Completed
           </Button>
         )}
-        <Button variant="link" onClick={handleRemoveClick}>
+        <Button variant="link" onClick={handleDeleteClick}>
           Delete
         </Button>
       </Card.Body>

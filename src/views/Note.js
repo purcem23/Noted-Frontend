@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
+import Loading from "../components/Loading";
 import NoteDisplay from "../components/NoteDisplay";
 
 function Note() {
@@ -37,7 +38,9 @@ function Note() {
     }
   }, [noteId, isEdit]);
 
-  return !loading ? (
+  return loading ? (
+    <Loading />
+  ) : (
     <NoteDisplay
       history={history}
       isEdit={isEdit}
@@ -47,9 +50,7 @@ function Note() {
       finished={note.finished}
       summary={summary.contents}
     ></NoteDisplay>
-  ) : (
-    <h2>Loading...</h2>
   );
 }
 
-export default Note;
+export { Note };

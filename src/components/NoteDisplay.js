@@ -5,24 +5,24 @@ import Col from "react-bootstrap/Col";
 import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
+import Spinner from "react-bootstrap/Spinner";
+import { alertService } from "../services";
 
 class NoteDisplay extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      name: "",
+      contents: "",
+      finished: false,
+      summary: "",
+      loading: false,
+    };
     if (props.isEdit) {
-      this.state = {
-        name: props.name,
-        contents: props.contents,
-        finished: props.finished,
-        summary: props.summary,
-      };
-    } else {
-      this.state = {
-        name: "",
-        contents: "",
-        finished: false,
-        summary: "",
-      };
+      this.state.name = props.name;
+      this.state.contents = props.contents;
+      this.state.finished = props.finished;
+      this.state.summary = props.summary;
     }
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
@@ -42,6 +42,7 @@ class NoteDisplay extends React.Component {
   }
 
   async handleSubmit(event) {
+    this.setState({ loading: true });
     event.preventDefault();
     if (this.props.isEdit) {
       await fetch(process.env.REACT_APP_API_URL + "/notes/" + this.props.id, {
@@ -52,7 +53,22 @@ class NoteDisplay extends React.Component {
           contents: this.state.contents,
           finished: this.state.finished,
         }),
-      });
+      })
+        .then(() => {
+          alertService.success("Note successfully updated!", {
+            autoClose: true,
+            keepAfterRouteChange: false,
+          });
+        })
+        .catch(() => {
+          alertService.error(`Error updating note. Please try again.`, {
+            autoClose: true,
+            keepAfterRouteChange: false,
+          });
+        })
+        .finally(() => {
+          this.setState({ loading: false });
+        });
     } else {
       await fetch(process.env.REACT_APP_API_URL + "/notes", {
         method: "POST",
@@ -62,9 +78,24 @@ class NoteDisplay extends React.Component {
           contents: this.state.contents,
           finished: this.state.finished,
         }),
-      });
+      })
+        .then(() => {
+          alertService.success("Note successfully created!", {
+            autoClose: true,
+            keepAfterRouteChange: false,
+          });
+          this.props.history.push("/notes");
+        })
+        .catch(() => {
+          alertService.error(`Error creating note. Please try again.`, {
+            autoClose: true,
+            keepAfterRouteChange: false,
+          });
+        })
+        .finally(() => {
+          this.setState({ loading: false });
+        });
     }
-    this.props.history.push("/notes");
   }
 
   render() {
@@ -131,6 +162,15 @@ class NoteDisplay extends React.Component {
                 type="submit"
                 onClick={this.handleSubmit}
               >
+                {this.state.loading && (
+                  <Spinner
+                    as="span"
+                    animation="border"
+                    size="sm"
+                    role="status"
+                    aria-hidden="true"
+                  />
+                )}
                 {this.state.isEdit ? "Update" : "Save"}
               </Button>
             </Form>

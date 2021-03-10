@@ -5,3 +5,14 @@
 .list-group .card:last-child {
   margin-bottom: 0;
 }
+
+.alerts {
+  position: fixed;
+  top: 1rem;
+  right: 0;
+  left: 0;
+  width: 100%;
+  max-width: 600px;
+  margin: auto;
+  z-index: 100;
+}

@@ -9,14 +9,14 @@ import {
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import Container from "react-bootstrap/Container";
-import Notes from "./views/Notes";
-import Note from "./views/Note";
-import Flashcards from "./views/Flashcards";
+import { history } from "./helpers";
+import { Notification } from "./components";
+import { Note, Notes, Flashcards } from "./views";
 import "./App.css";
 
 function App() {
   return (
-    <Router>
+    <Router history={history}>
       <div className="App">
         <Navbar bg="dark" variant="dark">
           <Navbar.Brand as={NavLink} to="/notes">
@@ -31,6 +31,7 @@ function App() {
             </Nav.Link>
           </Nav>
         </Navbar>
+        <Notification />
         <Container className="py-4">
           <Switch>
             <Redirect from="/" to="/notes" exact />

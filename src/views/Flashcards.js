@@ -15,4 +15,4 @@ function Flashcards() {
   return <FlashcardList flashcards={flashcards}></FlashcardList>;
 }
 
-export default Flashcards;
+export { Flashcards };

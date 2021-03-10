@@ -2,17 +2,34 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Nav from "react-bootstrap/Nav";
 import Button from "react-bootstrap/Button";
+import { alertService } from "../services";
+import Loading from "../components/Loading";
 import NoteList from "../components/NoteList";
 
 function Notes() {
+  const [loading, setLoading] = useState(true);
   const [notes, setNotes] = useState([]);
 
   useEffect(() => {
-    fetch(process.env.REACT_APP_API_URL + "/notes").then((response) =>
-      response.json().then((data) => {
-        setNotes(data);
-      })
-    );
+    async function fetchData() {
+      fetch(process.env.REACT_APP_API_URL + "/notes")
+        .then((response) =>
+          response.json().then((data) => {
+            setNotes(data);
+          })
+        )
+        .catch(() => {
+          alertService.error("Error retrieving notes.", {
+            autoClose: true,
+            keepAfterRouteChange: false,
+          });
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+
+    fetchData();
   }, []);
 
   function toggleComplete(finishedNote) {
@@ -24,21 +41,38 @@ function Notes() {
         contents: finishedNote.contents,
         finished: true,
       }),
-    }).then((response) =>
-      response.json().then(() => {
-        setNotes(
-          notes.map((note) => {
-            if (note.id === finishedNote.id) {
-              return {
-                ...note,
-                finished: true,
-              };
+    })
+      .then((response) =>
+        response.json().then(() => {
+          setNotes(
+            notes.map((note) => {
+              if (note.id === finishedNote.id) {
+                return {
+                  ...note,
+                  finished: true,
+                };
+              }
+              return note;
+            })
+          );
+          alertService.success(
+            `Woooohooo! You completed <strong>${finishedNote.name}</strong>.`,
+            {
+              autoClose: true,
+              keepAfterRouteChange: false,
             }
-            return note;
-          })
+          );
+        })
+      )
+      .catch(() => {
+        alertService.error(
+          `Error marking <strong>${finishedNote.name}</strong> as complete. Please try again.`,
+          {
+            autoClose: true,
+            keepAfterRouteChange: false,
+          }
         );
-      })
-    );
+      });
   }
 
   function toggleIncomplete(unfinishedNote) {
@@ -50,31 +84,65 @@ function Notes() {
         contents: unfinishedNote.contents,
         finished: false,
       }),
-    }).then((response) =>
-      response.json().then(() => {
-        setNotes(
-          notes.map((note) => {
-            if (note.id === unfinishedNote.id) {
-              return {
-                ...note,
-                finished: false,
-              };
+    })
+      .then((response) =>
+        response.json().then(() => {
+          setNotes(
+            notes.map((note) => {
+              if (note.id === unfinishedNote.id) {
+                return {
+                  ...note,
+                  finished: false,
+                };
+              }
+              return note;
+            })
+          );
+          alertService.info(
+            `Keep going! You can complete <strong>${unfinishedNote.name}</strong>.`,
+            {
+              autoClose: true,
+              keepAfterRouteChange: false,
             }
-            return note;
-          })
+          );
+        })
+      )
+      .catch(() => {
+        alertService.error(
+          `Error marking <strong>${unfinishedNote.name}</strong> as incomplete. Please try again.`,
+          {
+            autoClose: true,
+            keepAfterRouteChange: false,
+          }
         );
-      })
-    );
+      });
   }
 
-  function removeNote(id) {
-    fetch(process.env.REACT_APP_API_URL + "/notes/" + id, {
+  function deleteNote(deletedNote) {
+    fetch(process.env.REACT_APP_API_URL + "/notes/" + deletedNote.id, {
       method: "DELETE",
-    }).then((response) =>
-      response.json().then(() => {
-        setNotes(notes.filter((note) => note.id !== id));
-      })
-    );
+    })
+      .then((response) =>
+        response.json().then(() => {
+          setNotes(notes.filter((note) => note.id !== deletedNote.id));
+          alertService.success(
+            `Successfully deleted <strong>${deletedNote.name}</strong>.`,
+            {
+              autoClose: true,
+              keepAfterRouteChange: false,
+            }
+          );
+        })
+      )
+      .catch(() => {
+        alertService.error(
+          `Error deleting <strong>${deletedNote.name}</strong>. Please try again.`,
+          {
+            autoClose: true,
+            keepAfterRouteChange: false,
+          }
+        );
+      });
   }
 
   return (
@@ -86,14 +154,18 @@ function Notes() {
           </Button>
         </Nav.Item>
       </Nav>
-      <NoteList
-        notes={notes}
-        toggleComplete={toggleComplete}
-        toggleIncomplete={toggleIncomplete}
-        removeNote={removeNote}
-      ></NoteList>
+      {loading ? (
+        <Loading />
+      ) : (
+        <NoteList
+          notes={notes}
+          toggleComplete={toggleComplete}
+          toggleIncomplete={toggleIncomplete}
+          deleteNote={deleteNote}
+        ></NoteList>
+      )}
     </div>
   );
 }
 
-export default Notes;
+export { Notes };

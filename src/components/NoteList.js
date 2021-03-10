@@ -2,7 +2,7 @@ import React from "react";
 import ListGroup from "react-bootstrap/ListGroup";
 import Note from "./Note";
 
-function NoteList({ notes, toggleComplete, toggleIncomplete, removeNote }) {
+function NoteList({ notes, toggleComplete, toggleIncomplete, deleteNote }) {
   return (
     <ListGroup>
       {notes.map((note) => (
@@ -11,7 +11,7 @@ function NoteList({ notes, toggleComplete, toggleIncomplete, removeNote }) {
           note={note}
           toggleComplete={toggleComplete}
           toggleIncomplete={toggleIncomplete}
-          removeNote={removeNote}
+          deleteNote={deleteNote}
         />
       ))}
     </ListGroup>
