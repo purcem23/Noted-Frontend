@@ -14,7 +14,7 @@ function Flashcard({ flashcard }) {
       <Card.Body>
         <Card.Text>{front ? flashcard.front : flashcard.back}</Card.Text>
         <Button variant="primary" onClick={toggleFlashcard}>
-          {front ? "Show back" : "Show front"}
+          {front ? "Show Answer" : "Show Question"}
         </Button>
       </Card.Body>
     </Card>

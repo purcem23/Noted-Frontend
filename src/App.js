@@ -3,12 +3,14 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
+  Redirect,
   NavLink,
 } from "react-router-dom";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import Container from "react-bootstrap/Container";
 import Notes from "./views/Notes";
+import Note from "./views/Note";
 import Flashcards from "./views/Flashcards";
 import "./App.css";
 
@@ -29,10 +31,14 @@ function App() {
             </Nav.Link>
           </Nav>
         </Navbar>
-        <Container className="py-5">
+        <Container className="py-4">
           <Switch>
-            <Route path="/notes">
+            <Redirect from="/" to="/notes" exact />
+            <Route path="/notes" exact>
               <Notes />
+            </Route>
+            <Route path="/notes/:noteId">
+              <Note />
             </Route>
             <Route path="/flashcards">
               <Flashcards />
