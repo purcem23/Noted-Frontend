@@ -1,30 +1,24 @@
 import React from "react";
 import ListGroup from "react-bootstrap/ListGroup";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
 import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
 import { alertService } from "../services";
 
-class NoteDisplay extends React.Component {
+class FlashcardDisplay extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      name: "",
-      contents: "",
-      finished: false,
-      summary: "",
+      front: "",
+      back: "",
       loading: false,
       history: props.history,
       isEdit: props.isEdit,
     };
     if (props.isEdit) {
-      this.state.name = props.name;
-      this.state.contents = props.contents;
-      this.state.finished = props.finished;
-      this.state.summary = props.summary;
+      this.state.front = props.front;
+      this.state.back = props.back;
     }
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
@@ -47,23 +41,25 @@ class NoteDisplay extends React.Component {
     this.setState({ loading: true });
     event.preventDefault();
     if (this.props.isEdit) {
-      await fetch(process.env.REACT_APP_API_URL + "/notes/" + this.props.id, {
-        method: "PATCH",
-        headers: { "Content-type": "application/json; charset=UTF-8" },
-        body: JSON.stringify({
-          name: this.state.name,
-          contents: this.state.contents,
-          finished: this.state.finished,
-        }),
-      })
+      await fetch(
+        process.env.REACT_APP_API_URL + "/flashcards/" + this.props.id,
+        {
+          method: "PATCH",
+          headers: { "Content-type": "application/json; charset=UTF-8" },
+          body: JSON.stringify({
+            front: this.state.front,
+            back: this.state.back,
+          }),
+        }
+      )
         .then(() => {
-          alertService.success("Note successfully updated!", {
+          alertService.success("Flashcard successfully updated!", {
             autoClose: true,
             keepAfterRouteChange: false,
           });
         })
         .catch(() => {
-          alertService.error(`Error updating note. Please try again.`, {
+          alertService.error(`Error updating flashcard. Please try again.`, {
             autoClose: true,
             keepAfterRouteChange: false,
           });
@@ -72,26 +68,25 @@ class NoteDisplay extends React.Component {
           this.setState({ loading: false });
         });
     } else {
-      await fetch(process.env.REACT_APP_API_URL + "/notes", {
+      await fetch(process.env.REACT_APP_API_URL + "/flashcards", {
         method: "POST",
         headers: { "Content-type": "application/json; charset=UTF-8" },
         body: JSON.stringify({
-          name: this.state.name,
-          contents: this.state.contents,
-          finished: this.state.finished,
+          front: this.state.front,
+          back: this.state.back,
         }),
       })
         .then(() => {
-          alertService.success("Note successfully created!", {
+          alertService.success("Flashcard successfully created!", {
             autoClose: true,
             keepAfterRouteChange: false,
           });
           this.setState({ loading: false });
-          this.state.history.push("/notes");
+          this.state.history.push("/flashcards");
         })
         .catch(() => {
           this.setState({ loading: false });
-          alertService.error(`Error creating note. Please try again.`, {
+          alertService.error(`Error creating flashcard. Please try again.`, {
             autoClose: true,
             keepAfterRouteChange: false,
           });
@@ -102,60 +97,28 @@ class NoteDisplay extends React.Component {
   render() {
     return (
       <ListGroup>
-        {this.state.summary && (
-          <Card>
-            <Card.Header>
-              <Row>
-                <Col>Summary</Col>
-                <Col md="auto">
-                  <small>
-                    Content reduced by{" "}
-                    {Number(
-                      (1 -
-                        this.state.summary.length /
-                          this.state.contents.length) *
-                        100
-                    ).toFixed(2)}
-                    %
-                  </small>
-                </Col>
-              </Row>
-            </Card.Header>
-            <Card.Body>
-              <Card.Text>{this.state.summary}</Card.Text>
-            </Card.Body>
-          </Card>
-        )}
         <Card>
-          <Card.Header>Note</Card.Header>
+          <Card.Header>Flashcard</Card.Header>
           <Card.Body>
             <Form>
               <Form.Group>
                 <Form.Control
-                  type="text"
-                  placeholder="Name of note e.g. Biology Exam"
-                  name="name"
-                  value={this.state.name}
+                  as="textarea"
+                  rows={3}
+                  placeholder="Question e.g. The volume of blood pumped out by a ventricle with each heartbeat."
+                  name="front"
+                  value={this.state.front}
                   onChange={this.handleInputChange}
                 />
               </Form.Group>
               <Form.Group>
                 <Form.Control
                   as="textarea"
-                  rows={10}
-                  placeholder="Content of note e.g. An electrical system controls the rhythm of your heart. It’s called the cardiac conduction system."
-                  name="contents"
-                  value={this.state.contents}
+                  rows={3}
+                  placeholder="Answer e.g. Stroke volume."
+                  name="back"
+                  value={this.state.back}
                   onChange={this.handleInputChange}
-                />
-              </Form.Group>
-              <Form.Group>
-                <Form.Check
-                  type="checkbox"
-                  label="Completed"
-                  name="finished"
-                  checked={this.state.finished}
-                  onChange={this.handleCheckboxChange}
                 />
               </Form.Group>
               <Button
@@ -182,4 +145,4 @@ class NoteDisplay extends React.Component {
   }
 }
 
-export default NoteDisplay;
+export default FlashcardDisplay;

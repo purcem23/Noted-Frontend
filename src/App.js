@@ -11,7 +11,7 @@ import Nav from "react-bootstrap/Nav";
 import Container from "react-bootstrap/Container";
 import { history } from "./helpers";
 import { Notification } from "./components";
-import { Note, Notes, Flashcards } from "./views";
+import { Note, Notes, Flashcard, Flashcards } from "./views";
 import "./App.css";
 
 function App() {
@@ -41,8 +41,11 @@ function App() {
             <Route path="/notes/:noteId">
               <Note />
             </Route>
-            <Route path="/flashcards">
+            <Route path="/flashcards" exact>
               <Flashcards />
+            </Route>
+            <Route path="/flashcards/:flashcardId">
+              <Flashcard />
             </Route>
           </Switch>
         </Container>
