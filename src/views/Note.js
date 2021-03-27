@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useHistory } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Loading from "../components/Loading";
 import NoteDisplay from "../components/NoteDisplay";
+import { authFetch } from "../auth";
+import { alertService } from "../services";
 
-function Note() {
-  const history = useHistory();
+function Note({ token }) {
   const { noteId } = useParams();
   const isEdit = noteId !== "new";
   const [loading, setLoading] = useState(true);
@@ -13,25 +14,30 @@ function Note() {
 
   useEffect(() => {
     if (isEdit) {
-      async function fetchData() {
-        await fetch(process.env.REACT_APP_API_URL + "/notes/" + noteId).then(
-          (response) =>
-            response.json().then((data) => {
-              setNote(data);
-            })
-        );
-
-        await fetch(
-          process.env.REACT_APP_API_URL + "/note-summaries/" + noteId
-        ).then((response) =>
-          response.json().then((data) => {
-            setSummary(data);
+      function fetchData() {
+        authFetch(process.env.REACT_APP_API_URL + "/notes/" + noteId)
+          .then((response) => {
+            if (response.status === 200) {
+              response.json().then((data) => {
+                setNote(data);
+                authFetch(
+                  process.env.REACT_APP_API_URL + "/note-summaries/" + noteId
+                ).then((response) =>
+                  response.json().then((data) => {
+                    setSummary(data);
+                    setLoading(false);
+                  })
+                );
+              });
+            }
           })
-        );
-
-        setLoading(false);
+          .catch(() => {
+            alertService.error("Error retrieving note.", {
+              autoClose: true,
+              keepAfterRouteChange: false,
+            });
+          });
       }
-
       fetchData();
     } else {
       setLoading(false);
@@ -42,13 +48,13 @@ function Note() {
     <Loading />
   ) : (
     <NoteDisplay
-      history={history}
       isEdit={isEdit}
       id={note.id}
       name={note.name}
       contents={note.contents}
       finished={note.finished}
       summary={summary.contents}
+      token={token}
     ></NoteDisplay>
   );
 }

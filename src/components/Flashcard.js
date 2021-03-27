@@ -1,39 +1,52 @@
-import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
+import React from "react";
+import { withRouter } from "react-router-dom";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 
-function Flashcard({ flashcard, deleteFlashcard }) {
-  const history = useHistory();
-  const [front, setFront] = useState([]);
+class Flashcard extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      front: true,
+    };
+    this.toggleFlashcard = this.toggleFlashcard.bind(this);
+    this.handleDeleteClick = this.handleDeleteClick.bind(this);
+    this.handleViewClick = this.handleViewClick.bind(this);
+  }
 
-  function toggleFlashcard(event) {
+  toggleFlashcard(event) {
     event.stopPropagation();
-    setFront(!front);
+    this.setState({ front: !this.state.front });
   }
 
-  function handleDeleteClick(event) {
+  handleDeleteClick(event) {
     event.stopPropagation();
-    deleteFlashcard(flashcard);
+    this.props.deleteFlashcard(this.props.flashcard);
   }
 
-  function handleViewClick() {
-    history.push("/flashcards/" + flashcard.id);
+  handleViewClick() {
+    this.props.history.push("/flashcards/" + this.props.flashcard.id);
   }
 
-  return (
-    <Card style={{ cursor: "pointer" }} onClick={handleViewClick}>
-      <Card.Body>
-        <Card.Text>{front ? flashcard.front : flashcard.back}</Card.Text>
-        <Button variant="primary" onClick={toggleFlashcard}>
-          {front ? "Show Answer" : "Show Question"}
-        </Button>
-        <Button variant="link" onClick={handleDeleteClick}>
-          Delete
-        </Button>
-      </Card.Body>
-    </Card>
-  );
+  render() {
+    return (
+      <Card style={{ cursor: "pointer" }} onClick={this.handleViewClick}>
+        <Card.Body>
+          <Card.Text>
+            {this.state.front
+              ? this.props.flashcard.front
+              : this.props.flashcard.back}
+          </Card.Text>
+          <Button variant="primary" onClick={this.toggleFlashcard}>
+            {this.state.front ? "Show Answer" : "Show Question"}
+          </Button>
+          <Button variant="link" onClick={this.handleDeleteClick}>
+            Delete
+          </Button>
+        </Card.Body>
+      </Card>
+    );
+  }
 }
 
-export default Flashcard;
+export default withRouter(Flashcard);

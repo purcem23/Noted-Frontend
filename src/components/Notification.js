@@ -42,7 +42,7 @@ class Notification extends React.Component {
         this.setState({ alerts: [...this.state.alerts, alert] });
 
         if (alert.autoClose) {
-          setTimeout(() => this.removeAlert(alert), 3000);
+          setTimeout(() => this.removeAlert(alert), 5000);
         }
       });
 
@@ -95,4 +95,5 @@ class Notification extends React.Component {
 
 Notification.propTypes = propTypes;
 Notification.defaultProps = defaultProps;
-export { Notification };
+
+export default Notification;

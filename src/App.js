@@ -1,52 +1,49 @@
 import React from "react";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Redirect,
-  NavLink,
-} from "react-router-dom";
-import Navbar from "react-bootstrap/Navbar";
-import Nav from "react-bootstrap/Nav";
+import { Router, Switch, Route } from "react-router-dom";
 import Container from "react-bootstrap/Container";
+import { useAuth } from "./auth";
 import { history } from "./helpers";
-import { Notification } from "./components";
-import { Note, Notes, Flashcard, Flashcards } from "./views";
+import AuthRoute from "./components/AuthRoute";
+import Notification from "./components/Notification";
+import Menubar from "./components/Menubar";
+import {
+  Home,
+  Login,
+  Register,
+  Note,
+  Notes,
+  Flashcard,
+  Flashcards,
+} from "./views";
 import "./App.css";
 
 function App() {
+  const [logged] = useAuth();
+
   return (
     <Router history={history}>
       <div className="App">
-        <Navbar bg="dark" variant="dark">
-          <Navbar.Brand as={NavLink} to="/notes">
-            Noted
-          </Navbar.Brand>
-          <Nav className="mr-auto">
-            <Nav.Link as={NavLink} to="/notes">
-              Notes
-            </Nav.Link>
-            <Nav.Link as={NavLink} to="/flashcards">
-              Flashcards
-            </Nav.Link>
-          </Nav>
-        </Navbar>
+        <Menubar />
         <Notification />
         <Container className="py-4">
           <Switch>
-            <Redirect from="/" to="/notes" exact />
-            <Route path="/notes" exact>
-              <Notes />
-            </Route>
-            <Route path="/notes/:noteId">
-              <Note />
-            </Route>
-            <Route path="/flashcards" exact>
-              <Flashcards />
-            </Route>
-            <Route path="/flashcards/:flashcardId">
-              <Flashcard />
-            </Route>
+            {logged ? (
+              <>
+                <AuthRoute path="/notes" component={Notes} exact />
+                <AuthRoute path="/notes/:noteId" component={Note} />
+                <AuthRoute path="/flashcards" component={Flashcards} exact />
+                <AuthRoute
+                  path="/flashcards/:flashcardId"
+                  component={Flashcard}
+                />
+              </>
+            ) : (
+              <>
+                <Route path="/" component={Home} exact />
+                <Route path="/login" component={Login} exact />
+                <Route path="/register" component={Register} exact />
+              </>
+            )}
           </Switch>
         </Container>
       </div>

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Nav from "react-bootstrap/Nav";
 import Button from "react-bootstrap/Button";
+import { authFetch } from "../auth";
 import { alertService } from "../services";
 import Loading from "../components/Loading";
 import NoteList from "../components/NoteList";
@@ -11,21 +12,22 @@ function Notes() {
   const [notes, setNotes] = useState([]);
 
   useEffect(() => {
-    async function fetchData() {
-      fetch(process.env.REACT_APP_API_URL + "/notes")
-        .then((response) =>
-          response.json().then((data) => {
-            setNotes(data);
-          })
-        )
+    function fetchData() {
+      authFetch(process.env.REACT_APP_API_URL + "/notes")
+        .then((response) => {
+          if (response.status === 200) {
+            response.json().then((data) => {
+              setNotes(data);
+              setLoading(false);
+            });
+          }
+        })
         .catch(() => {
+          setLoading(false);
           alertService.error("Error retrieving notes.", {
             autoClose: true,
             keepAfterRouteChange: false,
           });
-        })
-        .finally(() => {
-          setLoading(false);
         });
     }
 
@@ -33,15 +35,13 @@ function Notes() {
   }, []);
 
   function toggleComplete(finishedNote) {
-    fetch(process.env.REACT_APP_API_URL + "/notes/" + finishedNote.id, {
-      method: "PATCH",
-      headers: { "Content-type": "application/json; charset=UTF-8" },
-      body: JSON.stringify({
-        name: finishedNote.name,
-        contents: finishedNote.contents,
-        finished: true,
-      }),
-    })
+    authFetch(
+      process.env.REACT_APP_API_URL + "/notes/" + finishedNote.id + "/complete",
+      {
+        method: "PUT",
+        headers: { "Content-type": "application/json; charset=UTF-8" },
+      }
+    )
       .then((response) =>
         response.json().then(() => {
           setNotes(
@@ -76,15 +76,16 @@ function Notes() {
   }
 
   function toggleIncomplete(unfinishedNote) {
-    fetch(process.env.REACT_APP_API_URL + "/notes/" + unfinishedNote.id, {
-      method: "PATCH",
-      headers: { "Content-type": "application/json; charset=UTF-8" },
-      body: JSON.stringify({
-        name: unfinishedNote.name,
-        contents: unfinishedNote.contents,
-        finished: false,
-      }),
-    })
+    authFetch(
+      process.env.REACT_APP_API_URL +
+        "/notes/" +
+        unfinishedNote.id +
+        "/incomplete",
+      {
+        method: "PUT",
+        headers: { "Content-type": "application/json; charset=UTF-8" },
+      }
+    )
       .then((response) =>
         response.json().then(() => {
           setNotes(
@@ -119,7 +120,7 @@ function Notes() {
   }
 
   function deleteNote(deletedNote) {
-    fetch(process.env.REACT_APP_API_URL + "/notes/" + deletedNote.id, {
+    authFetch(process.env.REACT_APP_API_URL + "/notes/" + deletedNote.id, {
       method: "DELETE",
     })
       .then((response) =>

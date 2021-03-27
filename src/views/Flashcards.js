@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Nav from "react-bootstrap/Nav";
 import Button from "react-bootstrap/Button";
+import { authFetch } from "../auth";
 import { alertService } from "../services";
 import Loading from "../components/Loading";
 import FlashcardList from "../components/FlashcardList";
@@ -11,21 +12,22 @@ function Flashcards() {
   const [flashcards, setFlashcards] = useState([]);
 
   useEffect(() => {
-    async function fetchData() {
-      fetch(process.env.REACT_APP_API_URL + "/flashcards")
-        .then((response) =>
-          response.json().then((data) => {
-            setFlashcards(data);
-          })
-        )
+    function fetchData() {
+      authFetch(process.env.REACT_APP_API_URL + "/flashcards")
+        .then((response) => {
+          if (response.status === 200) {
+            response.json().then((data) => {
+              setFlashcards(data);
+              setLoading(false);
+            });
+          }
+        })
         .catch(() => {
+          setLoading(false);
           alertService.error("Error retrieving flashcards.", {
             autoClose: true,
             keepAfterRouteChange: false,
           });
-        })
-        .finally(() => {
-          setLoading(false);
         });
     }
 
@@ -33,7 +35,7 @@ function Flashcards() {
   }, []);
 
   function deleteFlashcard(deletedFlashcard) {
-    fetch(
+    authFetch(
       process.env.REACT_APP_API_URL + "/flashcards/" + deletedFlashcard.id,
       {
         method: "DELETE",

@@ -1,4 +1,5 @@
 import React from "react";
+import { withRouter } from "react-router-dom";
 import ListGroup from "react-bootstrap/ListGroup";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -6,6 +7,8 @@ import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
+import TextareaAutosize from "react-textarea-autosize";
+import { authFetch } from "../auth";
 import { alertService } from "../services";
 
 class NoteDisplay extends React.Component {
@@ -17,8 +20,6 @@ class NoteDisplay extends React.Component {
       finished: false,
       summary: "",
       loading: false,
-      history: props.history,
-      isEdit: props.isEdit,
     };
     if (props.isEdit) {
       this.state.name = props.name;
@@ -47,34 +48,42 @@ class NoteDisplay extends React.Component {
     this.setState({ loading: true });
     event.preventDefault();
     if (this.props.isEdit) {
-      await fetch(process.env.REACT_APP_API_URL + "/notes/" + this.props.id, {
-        method: "PATCH",
-        headers: { "Content-type": "application/json; charset=UTF-8" },
-        body: JSON.stringify({
-          name: this.state.name,
-          contents: this.state.contents,
-          finished: this.state.finished,
-        }),
-      })
+      await authFetch(
+        process.env.REACT_APP_API_URL + "/notes/" + this.props.id,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            Authorization: "Bearer " + this.props.token,
+          },
+          body: JSON.stringify({
+            name: this.state.name,
+            contents: this.state.contents,
+            finished: this.state.finished,
+          }),
+        }
+      )
         .then(() => {
+          this.setState({ loading: false });
           alertService.success("Note successfully updated!", {
             autoClose: true,
             keepAfterRouteChange: false,
           });
         })
         .catch(() => {
+          this.setState({ loading: false });
           alertService.error(`Error updating note. Please try again.`, {
             autoClose: true,
             keepAfterRouteChange: false,
           });
-        })
-        .finally(() => {
-          this.setState({ loading: false });
         });
     } else {
-      await fetch(process.env.REACT_APP_API_URL + "/notes", {
+      await authFetch(process.env.REACT_APP_API_URL + "/notes", {
         method: "POST",
-        headers: { "Content-type": "application/json; charset=UTF-8" },
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+          Authorization: "Bearer " + this.props.token,
+        },
         body: JSON.stringify({
           name: this.state.name,
           contents: this.state.contents,
@@ -87,7 +96,7 @@ class NoteDisplay extends React.Component {
             keepAfterRouteChange: false,
           });
           this.setState({ loading: false });
-          this.state.history.push("/notes");
+          this.props.history.push("/notes");
         })
         .catch(() => {
           this.setState({ loading: false });
@@ -140,9 +149,10 @@ class NoteDisplay extends React.Component {
                 />
               </Form.Group>
               <Form.Group>
-                <Form.Control
-                  as="textarea"
-                  rows={10}
+                <TextareaAutosize
+                  className="form-control w-100"
+                  style={{ resize: "none", overflow: "visible" }}
+                  minRows={10}
                   placeholder="Content of note e.g. An electrical system controls the rhythm of your heart. It’s called the cardiac conduction system."
                   name="contents"
                   value={this.state.contents}
@@ -170,9 +180,10 @@ class NoteDisplay extends React.Component {
                     size="sm"
                     role="status"
                     aria-hidden="true"
+                    className="mr-2"
                   />
                 )}
-                {this.state.isEdit ? "Update" : "Save"}
+                {this.props.isEdit ? "Update" : "Save"}
               </Button>
             </Form>
           </Card.Body>
@@ -182,4 +193,4 @@ class NoteDisplay extends React.Component {
   }
 }
 
-export default NoteDisplay;
+export default withRouter(NoteDisplay);

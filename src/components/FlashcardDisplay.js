@@ -1,9 +1,12 @@
 import React from "react";
+import { withRouter } from "react-router-dom";
 import ListGroup from "react-bootstrap/ListGroup";
 import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
+import TextareaAutosize from "react-textarea-autosize";
+import { authFetch } from "../auth";
 import { alertService } from "../services";
 
 class FlashcardDisplay extends React.Component {
@@ -13,8 +16,6 @@ class FlashcardDisplay extends React.Component {
       front: "",
       back: "",
       loading: false,
-      history: props.history,
-      isEdit: props.isEdit,
     };
     if (props.isEdit) {
       this.state.front = props.front;
@@ -41,7 +42,7 @@ class FlashcardDisplay extends React.Component {
     this.setState({ loading: true });
     event.preventDefault();
     if (this.props.isEdit) {
-      await fetch(
+      await authFetch(
         process.env.REACT_APP_API_URL + "/flashcards/" + this.props.id,
         {
           method: "PATCH",
@@ -53,22 +54,21 @@ class FlashcardDisplay extends React.Component {
         }
       )
         .then(() => {
+          this.setState({ loading: false });
           alertService.success("Flashcard successfully updated!", {
             autoClose: true,
             keepAfterRouteChange: false,
           });
         })
         .catch(() => {
+          this.setState({ loading: false });
           alertService.error(`Error updating flashcard. Please try again.`, {
             autoClose: true,
             keepAfterRouteChange: false,
           });
-        })
-        .finally(() => {
-          this.setState({ loading: false });
         });
     } else {
-      await fetch(process.env.REACT_APP_API_URL + "/flashcards", {
+      await authFetch(process.env.REACT_APP_API_URL + "/flashcards", {
         method: "POST",
         headers: { "Content-type": "application/json; charset=UTF-8" },
         body: JSON.stringify({
@@ -77,12 +77,12 @@ class FlashcardDisplay extends React.Component {
         }),
       })
         .then(() => {
+          this.setState({ loading: false });
           alertService.success("Flashcard successfully created!", {
             autoClose: true,
-            keepAfterRouteChange: false,
+            keepAfterRouteChange: true,
           });
-          this.setState({ loading: false });
-          this.state.history.push("/flashcards");
+          this.props.history.push("/flashcards");
         })
         .catch(() => {
           this.setState({ loading: false });
@@ -102,9 +102,9 @@ class FlashcardDisplay extends React.Component {
           <Card.Body>
             <Form>
               <Form.Group>
-                <Form.Control
-                  as="textarea"
-                  rows={3}
+                <TextareaAutosize
+                  className="form-control w-100"
+                  minRows={3}
                   placeholder="Question e.g. The volume of blood pumped out by a ventricle with each heartbeat."
                   name="front"
                   value={this.state.front}
@@ -112,9 +112,9 @@ class FlashcardDisplay extends React.Component {
                 />
               </Form.Group>
               <Form.Group>
-                <Form.Control
-                  as="textarea"
-                  rows={3}
+                <TextareaAutosize
+                  className="form-control w-100"
+                  minRows={3}
                   placeholder="Answer e.g. Stroke volume."
                   name="back"
                   value={this.state.back}
@@ -133,9 +133,10 @@ class FlashcardDisplay extends React.Component {
                     size="sm"
                     role="status"
                     aria-hidden="true"
+                    className="mr-2"
                   />
                 )}
-                {this.state.isEdit ? "Update" : "Save"}
+                {this.props.isEdit ? "Update" : "Save"}
               </Button>
             </Form>
           </Card.Body>
@@ -145,4 +146,4 @@ class FlashcardDisplay extends React.Component {
   }
 }
 
-export default FlashcardDisplay;
+export default withRouter(FlashcardDisplay);

@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useHistory } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Loading from "../components/Loading";
 import FlashcardDisplay from "../components/FlashcardDisplay";
+import { authFetch } from "../auth";
+import { alertService } from "../services";
 
 function Flashcard() {
-  const history = useHistory();
   const { flashcardId } = useParams();
   const isEdit = flashcardId !== "new";
   const [loading, setLoading] = useState(true);
@@ -12,18 +13,24 @@ function Flashcard() {
 
   useEffect(() => {
     if (isEdit) {
-      async function fetchData() {
-        await fetch(
-          process.env.REACT_APP_API_URL + "/flashcards/" + flashcardId
-        ).then((response) =>
-          response.json().then((data) => {
-            setFlashcard(data);
+      function fetchData() {
+        authFetch(process.env.REACT_APP_API_URL + "/flashcards/" + flashcardId)
+          .then((response) => {
+            if (response.status === 200) {
+              response.json().then((data) => {
+                setFlashcard(data);
+                setLoading(false);
+              });
+            }
           })
-        );
-
-        setLoading(false);
+          .catch(() => {
+            setLoading(false);
+            alertService.error("Error retrieving flashcard.", {
+              autoClose: true,
+              keepAfterRouteChange: false,
+            });
+          });
       }
-
       fetchData();
     } else {
       setLoading(false);
@@ -34,7 +41,6 @@ function Flashcard() {
     <Loading />
   ) : (
     <FlashcardDisplay
-      history={history}
       isEdit={isEdit}
       id={flashcard.id}
       back={flashcard.back}

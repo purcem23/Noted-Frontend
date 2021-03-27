@@ -1,80 +1,88 @@
 import React from "react";
-import { useHistory } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import { CheckCircle, Circle } from "react-bootstrap-icons";
+import { CheckCircleFill, Circle } from "react-bootstrap-icons";
 
-function Note({ note, toggleComplete, toggleIncomplete, deleteNote }) {
-  const history = useHistory();
+class Note extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleCompleteClick = this.handleCompleteClick.bind(this);
+    this.handleIncompleteClick = this.handleIncompleteClick.bind(this);
+    this.handleDeleteClick = this.handleDeleteClick.bind(this);
+    this.handleViewClick = this.handleViewClick.bind(this);
+  }
 
-  function handleCompleteClick(event) {
+  handleCompleteClick(event) {
     event.stopPropagation();
-    toggleComplete(note);
+    this.props.toggleComplete(this.props.note);
   }
 
-  function handleIncompleteClick(event) {
+  handleIncompleteClick(event) {
     event.stopPropagation();
-    toggleIncomplete(note);
+    this.props.toggleIncomplete(this.props.note);
   }
 
-  function handleDeleteClick(event) {
+  handleDeleteClick(event) {
     event.stopPropagation();
-    deleteNote(note);
+    this.props.deleteNote(this.props.note);
   }
 
-  function handleViewClick() {
-    history.push("/notes/" + note.id);
+  handleViewClick() {
+    this.props.history.push("/notes/" + this.props.note.id);
   }
 
-  return (
-    <Card
-      border={note.finished ? "success" : ""}
-      style={{ cursor: "pointer" }}
-      onClick={handleViewClick}
-    >
-      <Card.Header>
-        <Row>
-          <Col>{note.name}</Col>
-          {note.finished ? (
-            <Col md="auto" className="text-success">
-              <small className="align-middle">Completed</small>{" "}
-              <span className="align-top">
-                <CheckCircle size={14} />
-              </span>
-            </Col>
+  render() {
+    return (
+      <Card
+        border={this.props.note.finished ? "success" : ""}
+        style={{ cursor: "pointer" }}
+        onClick={this.handleViewClick}
+      >
+        <Card.Header>
+          <Row>
+            <Col>{this.props.note.name}</Col>
+            {this.props.note.finished ? (
+              <Col md="auto" className="text-success">
+                <small className="align-middle">Completed</small>{" "}
+                <span className="align-top">
+                  <CheckCircleFill size={14} />
+                </span>
+              </Col>
+            ) : (
+              <Col md="auto" className="text-secondary">
+                <small className="align-middle">Incomplete</small>{" "}
+                <span className="align-top">
+                  <Circle size={14} />
+                </span>
+              </Col>
+            )}
+          </Row>
+        </Card.Header>
+        <Card.Body>
+          <Card.Text>
+            {this.props.note.contents.length > 50
+              ? this.props.note.contents.substring(0, 50) + "..."
+              : this.props.note.contents}
+          </Card.Text>
+          {this.props.note.finished ? (
+            <Button variant="primary" onClick={this.handleIncompleteClick}>
+              Mark Incomplete
+            </Button>
           ) : (
-            <Col md="auto" className="text-secondary">
-              <small className="align-middle">Incomplete</small>{" "}
-              <span className="align-top">
-                <Circle size={14} />
-              </span>
-            </Col>
+            <Button variant="primary" onClick={this.handleCompleteClick}>
+              Mark Completed
+            </Button>
           )}
-        </Row>
-      </Card.Header>
-      <Card.Body>
-        <Card.Text>
-          {note.contents.length > 50
-            ? note.contents.substring(0, 50) + "..."
-            : note.contents}
-        </Card.Text>
-        {note.finished ? (
-          <Button variant="primary" onClick={handleIncompleteClick}>
-            Mark Incomplete
+          <Button variant="link" onClick={this.statehandleDeleteClick}>
+            Delete
           </Button>
-        ) : (
-          <Button variant="primary" onClick={handleCompleteClick}>
-            Mark Completed
-          </Button>
-        )}
-        <Button variant="link" onClick={handleDeleteClick}>
-          Delete
-        </Button>
-      </Card.Body>
-    </Card>
-  );
+        </Card.Body>
+      </Card>
+    );
+  }
 }
 
-export default Note;
+export default withRouter(Note);
