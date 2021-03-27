@@ -2,7 +2,7 @@ import React from "react";
 import { NavLink, withRouter } from "react-router-dom";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
-import { useAuth, logout } from "../auth";
+import { useAuth, logout, getUser, removeUser } from "../auth";
 
 function Menubar({ history }) {
   const [logged] = useAuth();
@@ -28,9 +28,13 @@ function Menubar({ history }) {
         </Nav.Link>
       </Nav>
       <Nav className="ml-auto">
+        <Nav.Link className="text-light" disabled>
+          Welcome back {getUser()}!
+        </Nav.Link>
         <Nav.Link
           onClick={() => {
             logout();
+            removeUser();
             history.push("/");
           }}
         >

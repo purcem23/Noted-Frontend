@@ -8,3 +8,17 @@ export const [useAuth, authFetch, login, logout] = createAuthProvider({
       body: token.access_token,
     }).then((r) => r.json()),
 });
+
+function setUser(username) {
+  localStorage.setItem("logged_user", username);
+}
+
+function getUser() {
+  return localStorage.getItem("logged_user");
+}
+
+function removeUser() {
+  return localStorage.removeItem("logged_user");
+}
+
+export { setUser, getUser, removeUser };
