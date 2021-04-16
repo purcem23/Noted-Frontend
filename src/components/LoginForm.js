@@ -54,7 +54,7 @@ class Login extends React.Component {
           } else if (response.status === 401) {
             this.setState({ loading: false });
             alertService.error(
-              `Error logging in. Please check your credentials.`,
+              "Error logging in. Please check your credentials.",
               {
                 autoClose: true,
                 keepAfterRouteChange: false,
@@ -65,7 +65,7 @@ class Login extends React.Component {
         .catch((e) => {
           console.error(e);
           this.setState({ loading: false });
-          alertService.error(`Error logging in. Please try again.`, {
+          alertService.error("Error logging in. Please try again.", {
             autoClose: true,
             keepAfterRouteChange: false,
           });

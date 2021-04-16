@@ -5,3 +5,4 @@ export * from "./Flashcard";
 export * from "./Flashcards";
 export * from "./Note";
 export * from "./Notes";
+export * from "./SpacedRepetition";

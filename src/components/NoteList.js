@@ -5,15 +5,19 @@ import Note from "./Note";
 function NoteList({ notes, toggleComplete, toggleIncomplete, deleteNote }) {
   return (
     <ListGroup>
-      {notes.map((note) => (
-        <Note
-          key={note.id}
-          note={note}
-          toggleComplete={toggleComplete}
-          toggleIncomplete={toggleIncomplete}
-          deleteNote={deleteNote}
-        />
-      ))}
+      {notes.length === 0 ? (
+        <p>No notes found...</p>
+      ) : (
+        notes.map((note) => (
+          <Note
+            key={note.id}
+            note={note}
+            toggleComplete={toggleComplete}
+            toggleIncomplete={toggleIncomplete}
+            deleteNote={deleteNote}
+          />
+        ))
+      )}
     </ListGroup>
   );
 }

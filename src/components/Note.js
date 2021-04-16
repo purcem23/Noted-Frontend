@@ -63,8 +63,8 @@ class Note extends React.Component {
         </Card.Header>
         <Card.Body>
           <Card.Text>
-            {this.props.note.contents.length > 50
-              ? this.props.note.contents.substring(0, 50) + "..."
+            {this.props.note.contents.length > 200
+              ? this.props.note.contents.substring(0, 200) + "..."
               : this.props.note.contents}
           </Card.Text>
           {this.props.note.finished ? (
@@ -76,7 +76,11 @@ class Note extends React.Component {
               Mark Completed
             </Button>
           )}
-          <Button variant="link" onClick={this.statehandleDeleteClick}>
+          <Button
+            className="ml-2"
+            variant="outline-danger"
+            onClick={this.handleDeleteClick}
+          >
             Delete
           </Button>
         </Card.Body>

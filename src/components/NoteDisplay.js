@@ -72,7 +72,7 @@ class NoteDisplay extends React.Component {
         })
         .catch(() => {
           this.setState({ loading: false });
-          alertService.error(`Error updating note. Please try again.`, {
+          alertService.error("Error updating note. Please try again.", {
             autoClose: true,
             keepAfterRouteChange: false,
           });
@@ -100,7 +100,7 @@ class NoteDisplay extends React.Component {
         })
         .catch(() => {
           this.setState({ loading: false });
-          alertService.error(`Error creating note. Please try again.`, {
+          alertService.error("Error creating note. Please try again.", {
             autoClose: true,
             keepAfterRouteChange: false,
           });

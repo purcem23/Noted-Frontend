@@ -1,18 +1,18 @@
 import React from "react";
 import ListGroup from "react-bootstrap/ListGroup";
-import Flashcard from "./Flashcard";
+import SpacedRepetition from "./SpacedRepetition";
 
-function FlashcardList({ flashcards, deleteFlashcard }) {
+function SpacedRepetitionList({ flashcards, answerFlashcard }) {
   return (
     <ListGroup>
       {flashcards.length === 0 ? (
-        <p>No flashcards found...</p>
+        <p>No spaced repetition due...</p>
       ) : (
         flashcards.map((flashcard) => (
-          <Flashcard
+          <SpacedRepetition
             key={flashcard.id}
             flashcard={flashcard}
-            deleteFlashcard={deleteFlashcard}
+            answerFlashcard={answerFlashcard}
           />
         ))
       )}
@@ -20,4 +20,4 @@ function FlashcardList({ flashcards, deleteFlashcard }) {
   );
 }
 
-export default FlashcardList;
+export default SpacedRepetitionList;

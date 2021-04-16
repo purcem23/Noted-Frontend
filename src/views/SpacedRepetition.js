@@ -1,19 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import Nav from "react-bootstrap/Nav";
-import Button from "react-bootstrap/Button";
 import { authFetch } from "../auth";
 import { alertService } from "../services";
 import Loading from "../components/Loading";
-import FlashcardList from "../components/FlashcardList";
+import SpacedRepetitionList from "../components/SpacedRepetitionList";
 
-function Flashcards() {
+function SpacedRepetition() {
   const [loading, setLoading] = useState(true);
   const [flashcards, setFlashcards] = useState([]);
 
   useEffect(() => {
     function fetchData() {
-      authFetch(process.env.REACT_APP_API_URL + "/flashcards")
+      authFetch(process.env.REACT_APP_API_URL + "/flashcards/due")
         .then((response) => {
           if (response.status === 200) {
             response.json().then((data) => {
@@ -34,28 +31,40 @@ function Flashcards() {
     fetchData();
   }, []);
 
-  function deleteFlashcard(deletedFlashcard) {
+  function answerFlashcard(answeredFlashcard, score) {
     authFetch(
-      process.env.REACT_APP_API_URL + "/flashcards/" + deletedFlashcard.id,
+      process.env.REACT_APP_API_URL +
+        "/flashcards/" +
+        answeredFlashcard.id +
+        "/answer",
       {
-        method: "DELETE",
+        method: "PUT",
+        headers: { "Content-type": "application/json; charset=UTF-8" },
+        body: JSON.stringify({
+          score,
+        }),
       }
     )
       .then((response) =>
         response.json().then(() => {
           setFlashcards(
             flashcards.filter(
-              (flashcard) => flashcard.id !== deletedFlashcard.id
+              (flashcard) => flashcard.id !== answeredFlashcard.id
             )
           );
-          alertService.success("Successfully deleted flashcard.", {
-            autoClose: true,
-            keepAfterRouteChange: false,
-          });
+          alertService.success(
+            score > 3
+              ? "Keep up the great work!"
+              : "I know you will do better next time.",
+            {
+              autoClose: true,
+              keepAfterRouteChange: false,
+            }
+          );
         })
       )
       .catch(() => {
-        alertService.error("Error deleting flashcard. Please try again.", {
+        alertService.error("Error answering flashcard. Please try again.", {
           autoClose: true,
           keepAfterRouteChange: false,
         });
@@ -64,23 +73,16 @@ function Flashcards() {
 
   return (
     <div>
-      <Nav className="justify-content-end pb-3">
-        <Nav.Item>
-          <Button variant="primary" as={Link} to="/flashcards/new">
-            New Flashcard
-          </Button>
-        </Nav.Item>
-      </Nav>
       {loading ? (
         <Loading />
       ) : (
-        <FlashcardList
+        <SpacedRepetitionList
           flashcards={flashcards}
-          deleteFlashcard={deleteFlashcard}
-        ></FlashcardList>
+          answerFlashcard={answerFlashcard}
+        ></SpacedRepetitionList>
       )}
     </div>
   );
 }
 
-export { Flashcards };
+export { SpacedRepetition };

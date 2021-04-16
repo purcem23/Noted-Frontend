@@ -10,7 +10,6 @@ function Note({ token }) {
   const isEdit = noteId !== "new";
   const [loading, setLoading] = useState(true);
   const [note, setNote] = useState({});
-  const [summary, setSummary] = useState({});
 
   useEffect(() => {
     if (isEdit) {
@@ -20,14 +19,7 @@ function Note({ token }) {
             if (response.status === 200) {
               response.json().then((data) => {
                 setNote(data);
-                authFetch(
-                  process.env.REACT_APP_API_URL + "/note-summaries/" + noteId
-                ).then((response) =>
-                  response.json().then((data) => {
-                    setSummary(data);
-                    setLoading(false);
-                  })
-                );
+                setLoading(false);
               });
             }
           })
@@ -53,7 +45,7 @@ function Note({ token }) {
       name={note.name}
       contents={note.contents}
       finished={note.finished}
-      summary={summary.contents}
+      summary={note.summary}
       token={token}
     ></NoteDisplay>
   );

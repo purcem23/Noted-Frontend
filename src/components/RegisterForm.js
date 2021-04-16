@@ -67,13 +67,13 @@ class Register extends React.Component {
           .catch((e) => {
             console.error(e);
             this.setState({ loading: false });
-            alertService.error(`Error registering in. Please try again.`, {
+            alertService.error("Error registering in. Please try again.", {
               autoClose: true,
               keepAfterRouteChange: false,
             });
           });
       } else {
-        alertService.error(`Passwords do not match.`, {
+        alertService.error("Passwords do not match.", {
           autoClose: true,
           keepAfterRouteChange: false,
         });

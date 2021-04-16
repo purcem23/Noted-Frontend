@@ -62,7 +62,7 @@ class FlashcardDisplay extends React.Component {
         })
         .catch(() => {
           this.setState({ loading: false });
-          alertService.error(`Error updating flashcard. Please try again.`, {
+          alertService.error("Error updating flashcard. Please try again.", {
             autoClose: true,
             keepAfterRouteChange: false,
           });
@@ -86,7 +86,7 @@ class FlashcardDisplay extends React.Component {
         })
         .catch(() => {
           this.setState({ loading: false });
-          alertService.error(`Error creating flashcard. Please try again.`, {
+          alertService.error("Error creating flashcard. Please try again.", {
             autoClose: true,
             keepAfterRouteChange: false,
           });

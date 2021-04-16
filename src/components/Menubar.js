@@ -8,7 +8,7 @@ function Menubar({ history }) {
   const [logged] = useAuth();
 
   return logged ? (
-    <Navbar bg="dark" variant="dark">
+    <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
       <Navbar.Brand as={NavLink} to="/notes">
         <img
           src="/logo.png"
@@ -19,31 +19,37 @@ function Menubar({ history }) {
         />
         Noted
       </Navbar.Brand>
-      <Nav className="mr-auto">
-        <Nav.Link as={NavLink} to="/notes">
-          Notes
-        </Nav.Link>
-        <Nav.Link as={NavLink} to="/flashcards">
-          Flashcards
-        </Nav.Link>
-      </Nav>
-      <Nav className="ml-auto">
-        <Nav.Link className="text-light" disabled>
-          Welcome back {getUser()}!
-        </Nav.Link>
-        <Nav.Link
-          onClick={() => {
-            logout();
-            removeUser();
-            history.push("/");
-          }}
-        >
-          Logout
-        </Nav.Link>
-      </Nav>
+      <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+      <Navbar.Collapse id="responsive-navbar-nav">
+        <Nav className="mr-auto">
+          <Nav.Link as={NavLink} to="/notes">
+            Notes
+          </Nav.Link>
+          <Nav.Link as={NavLink} to="/flashcards">
+            Flashcards
+          </Nav.Link>
+          <Nav.Link as={NavLink} to="/spaced-repetition">
+            Spaced Repetition
+          </Nav.Link>
+        </Nav>
+        <Nav className="ml-auto">
+          <Nav.Link className="text-light d-none d-lg-block" disabled>
+            Welcome back {getUser()}!
+          </Nav.Link>
+          <Nav.Link
+            onClick={() => {
+              logout();
+              removeUser();
+              history.push("/");
+            }}
+          >
+            Logout
+          </Nav.Link>
+        </Nav>
+      </Navbar.Collapse>
     </Navbar>
   ) : (
-    <Navbar bg="dark" variant="dark">
+    <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
       <Navbar.Brand as={NavLink} to="/">
         <img
           src="/logo.png"
@@ -54,14 +60,17 @@ function Menubar({ history }) {
         />
         Noted
       </Navbar.Brand>
-      <Nav className="ml-auto">
-        <Nav.Link as={NavLink} to="/login">
-          Login
-        </Nav.Link>
-        <Nav.Link as={NavLink} to="/register">
-          Register
-        </Nav.Link>
-      </Nav>
+      <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+      <Navbar.Collapse id="responsive-navbar-nav">
+        <Nav className="ml-auto">
+          <Nav.Link as={NavLink} to="/login">
+            Login
+          </Nav.Link>
+          <Nav.Link as={NavLink} to="/register">
+            Register
+          </Nav.Link>
+        </Nav>
+      </Navbar.Collapse>
     </Navbar>
   );
 }

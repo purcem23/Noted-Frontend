@@ -14,6 +14,7 @@ import {
   Notes,
   Flashcard,
   Flashcards,
+  SpacedRepetition,
 } from "./views";
 import "./App.css";
 
@@ -35,6 +36,11 @@ function App() {
                 <AuthRoute
                   path="/flashcards/:flashcardId"
                   component={Flashcard}
+                />
+                <AuthRoute
+                  path="/spaced-repetition"
+                  component={SpacedRepetition}
+                  exact
                 />
               </>
             ) : (
