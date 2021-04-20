@@ -5,6 +5,7 @@ import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
+import Badge from "react-bootstrap/Badge";
 import TextareaAutosize from "react-textarea-autosize";
 import { authFetch } from "../auth";
 import { alertService } from "../services";
@@ -120,6 +121,17 @@ class FlashcardDisplay extends React.Component {
                   value={this.state.back}
                   onChange={this.handleInputChange}
                 />
+              </Form.Group>
+              <Form.Group>
+                <div>
+                  {[
+                    ...new Set(this.state.back.matchAll("(?<=#)[a-zA-Z0-9]+")),
+                  ].map((tag, index) => (
+                    <Badge key={index} className="mr-1" pill variant="light">
+                      {tag}
+                    </Badge>
+                  ))}
+                </div>
               </Form.Group>
               <Button
                 variant="primary"

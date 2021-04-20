@@ -2,6 +2,7 @@ import React from "react";
 import { withRouter } from "react-router-dom";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
+import Badge from "react-bootstrap/Badge";
 
 class Flashcard extends React.Component {
   constructor(props) {
@@ -25,6 +26,13 @@ class Flashcard extends React.Component {
         <Card.Header>{this.props.flashcard.front}</Card.Header>
         <Card.Body>
           <Card.Text>{this.props.flashcard.back}</Card.Text>
+          <Card.Text>
+            {this.props.flashcard.tags.map((tag, index) => (
+              <Badge key={index} className="mr-1" pill variant="light">
+                {tag}
+              </Badge>
+            ))}
+          </Card.Text>
           <Button variant="outline-danger" onClick={this.handleDeleteClick}>
             Delete
           </Button>

@@ -3,6 +3,7 @@ import { withRouter } from "react-router-dom";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
+import Badge from "react-bootstrap/Badge";
 
 class SpacedRepetition extends React.Component {
   constructor(props) {
@@ -47,6 +48,13 @@ class SpacedRepetition extends React.Component {
             ) : (
               <strong>{this.props.flashcard.back}</strong>
             )}
+          </Card.Text>
+          <Card.Text>
+            {this.props.flashcard.tags.map((tag, index) => (
+              <Badge key={index} className="mr-1" pill variant="light">
+                {tag}
+              </Badge>
+            ))}
           </Card.Text>
           {this.state.front ? (
             <Button variant="primary" onClick={this.toggleFlashcard}>

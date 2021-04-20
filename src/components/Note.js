@@ -4,6 +4,7 @@ import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import Badge from "react-bootstrap/Badge";
 import { CheckCircleFill, Circle } from "react-bootstrap-icons";
 
 class Note extends React.Component {
@@ -66,6 +67,13 @@ class Note extends React.Component {
             {this.props.note.contents.length > 200
               ? this.props.note.contents.substring(0, 200) + "..."
               : this.props.note.contents}
+          </Card.Text>
+          <Card.Text>
+            {this.props.note.tags.map((tag, index) => (
+              <Badge key={index} className="mr-1" pill variant="light">
+                {tag}
+              </Badge>
+            ))}
           </Card.Text>
           {this.props.note.finished ? (
             <Button variant="primary" onClick={this.handleIncompleteClick}>

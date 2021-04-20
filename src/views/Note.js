@@ -46,6 +46,7 @@ function Note({ token }) {
       contents={note.contents}
       finished={note.finished}
       summary={note.summary}
+      tags={note.tags}
       token={token}
     ></NoteDisplay>
   );
