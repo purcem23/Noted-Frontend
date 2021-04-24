@@ -4,7 +4,7 @@ import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
-import { login, setUser } from "../auth";
+import { login } from "../auth";
 import { alertService } from "../services";
 
 class Login extends React.Component {
@@ -41,7 +41,6 @@ class Login extends React.Component {
           if (response.status === 200) {
             response.json().then((data) => {
               if (data.access_token) {
-                setUser(data.username);
                 login(data);
               }
             });

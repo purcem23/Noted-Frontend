@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import Nav from "react-bootstrap/Nav";
+import Select from "react-select";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import { authFetch } from "../auth";
 import { alertService } from "../services";
@@ -10,6 +12,7 @@ import NoteList from "../components/NoteList";
 function Notes() {
   const [loading, setLoading] = useState(true);
   const [notes, setNotes] = useState([]);
+  const [tags, setTags] = useState([]);
 
   useEffect(() => {
     function fetchData() {
@@ -18,6 +21,13 @@ function Notes() {
           if (response.status === 200) {
             response.json().then((data) => {
               setNotes(data);
+              setTags([
+                ...new Set(
+                  data.reduce((ts, t) => {
+                    return ts.concat(t.tags);
+                  }, [])
+                ),
+              ]);
               setLoading(false);
             });
           }
@@ -33,6 +43,37 @@ function Notes() {
 
     fetchData();
   }, []);
+
+  function getNotes(search = null) {
+    authFetch(
+      process.env.REACT_APP_API_URL +
+        "/notes" +
+        (search ? "?tag=" + search : "")
+    )
+      .then((response) => {
+        if (response.status === 200) {
+          response.json().then((data) => {
+            setNotes(data);
+            setLoading(false);
+          });
+        }
+      })
+      .catch(() => {
+        setLoading(false);
+        alertService.error("Error retrieving notes.", {
+          autoClose: true,
+          keepAfterRouteChange: false,
+        });
+      });
+  }
+
+  function searchNotes(tag) {
+    if (tag) {
+      getNotes(tag.value);
+    } else {
+      getNotes();
+    }
+  }
 
   function toggleComplete(finishedNote) {
     authFetch(
@@ -148,13 +189,24 @@ function Notes() {
 
   return (
     <div>
-      <Nav className="justify-content-end pb-3">
-        <Nav.Item>
+      <Row className="pb-3">
+        <Col className="text-left">
+          <Select
+            type="text"
+            placeholder="Search by tag"
+            options={tags.map((t) => {
+              return { label: t.toLowerCase(), value: t.toLowerCase() };
+            })}
+            onChange={searchNotes}
+            isClearable={true}
+          />
+        </Col>
+        <Col className="text-right">
           <Button variant="primary" as={Link} to="/notes/new">
             New Note
           </Button>
-        </Nav.Item>
-      </Nav>
+        </Col>
+      </Row>
       {loading ? (
         <Loading />
       ) : (

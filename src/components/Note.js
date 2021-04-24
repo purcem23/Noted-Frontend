@@ -70,7 +70,7 @@ class Note extends React.Component {
           </Card.Text>
           <Card.Text>
             {this.props.note.tags.map((tag, index) => (
-              <Badge key={index} className="mr-1" pill variant="light">
+              <Badge key={index} className="mr-1" pill variant="secondary">
                 {tag}
               </Badge>
             ))}

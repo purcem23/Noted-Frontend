@@ -2,7 +2,7 @@ import React from "react";
 import { NavLink, withRouter } from "react-router-dom";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
-import { useAuth, logout, getUser, removeUser } from "../auth";
+import { useAuth, logout, getUser } from "../auth";
 
 function Menubar({ history }) {
   const [logged] = useAuth();
@@ -39,7 +39,6 @@ function Menubar({ history }) {
           <Nav.Link
             onClick={() => {
               logout();
-              removeUser();
               history.push("/");
             }}
           >

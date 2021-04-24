@@ -25,6 +25,7 @@ class FlashcardDisplay extends React.Component {
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.flashcardTags = this.flashcardTags.bind(this);
   }
 
   handleInputChange(event) {
@@ -95,6 +96,12 @@ class FlashcardDisplay extends React.Component {
     }
   }
 
+  flashcardTags() {
+    const frontTags = this.state.front.match(/\B(#[a-zA-Z]+\b)(?!;)/g) || [];
+    const backTags = this.state.back.match(/\B(#[a-zA-Z]+\b)(?!;)/g) || [];
+    return [...new Set(frontTags.concat(backTags))];
+  }
+
   render() {
     return (
       <ListGroup>
@@ -123,15 +130,11 @@ class FlashcardDisplay extends React.Component {
                 />
               </Form.Group>
               <Form.Group>
-                <div>
-                  {[
-                    ...new Set(this.state.back.matchAll("(?<=#)[a-zA-Z0-9]+")),
-                  ].map((tag, index) => (
-                    <Badge key={index} className="mr-1" pill variant="light">
-                      {tag}
-                    </Badge>
-                  ))}
-                </div>
+                {this.flashcardTags().map((tag, index) => (
+                  <Badge key={index} className="mr-1" pill variant="secondary">
+                    {tag.toLowerCase().substring(1)}
+                  </Badge>
+                ))}
               </Form.Group>
               <Button
                 variant="primary"

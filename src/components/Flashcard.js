@@ -28,7 +28,7 @@ class Flashcard extends React.Component {
           <Card.Text>{this.props.flashcard.back}</Card.Text>
           <Card.Text>
             {this.props.flashcard.tags.map((tag, index) => (
-              <Badge key={index} className="mr-1" pill variant="light">
+              <Badge key={index} className="mr-1" pill variant="secondary">
                 {tag}
               </Badge>
             ))}

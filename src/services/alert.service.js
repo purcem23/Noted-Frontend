@@ -17,7 +17,7 @@ export const alertService = {
 export const alertType = {
   success: "success",
   error: "danger",
-  info: "info",
+  info: "primary",
   warning: "warning",
 };
 

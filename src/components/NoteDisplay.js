@@ -31,6 +31,7 @@ class NoteDisplay extends React.Component {
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.noteTags = this.noteTags.bind(this);
   }
 
   handleInputChange(event) {
@@ -109,6 +110,11 @@ class NoteDisplay extends React.Component {
     }
   }
 
+  noteTags() {
+    const tags = this.state.contents.match(/\B(#[a-zA-Z]+\b)(?!;)/g) || [];
+    return [...new Set(tags)];
+  }
+
   render() {
     return (
       <ListGroup>
@@ -162,13 +168,14 @@ class NoteDisplay extends React.Component {
               </Form.Group>
               <Form.Group>
                 <div>
-                  {[
-                    ...new Set(
-                      this.state.contents.matchAll("(?<=#)[a-zA-Z0-9]+")
-                    ),
-                  ].map((tag, index) => (
-                    <Badge key={index} className="mr-1" pill variant="light">
-                      {tag}
+                  {this.noteTags().map((tag, index) => (
+                    <Badge
+                      key={index}
+                      className="mr-1"
+                      pill
+                      variant="secondary"
+                    >
+                      {tag.toLowerCase().substring(1)}
                     </Badge>
                   ))}
                 </div>

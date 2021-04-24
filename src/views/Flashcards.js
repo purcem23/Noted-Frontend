@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import Nav from "react-bootstrap/Nav";
+import Select from "react-select";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import { authFetch } from "../auth";
 import { alertService } from "../services";
@@ -10,6 +12,7 @@ import FlashcardList from "../components/FlashcardList";
 function Flashcards() {
   const [loading, setLoading] = useState(true);
   const [flashcards, setFlashcards] = useState([]);
+  const [tags, setTags] = useState([]);
 
   useEffect(() => {
     function fetchData() {
@@ -18,6 +21,13 @@ function Flashcards() {
           if (response.status === 200) {
             response.json().then((data) => {
               setFlashcards(data);
+              setTags([
+                ...new Set(
+                  data.reduce((ts, t) => {
+                    return ts.concat(t.tags);
+                  }, [])
+                ),
+              ]);
               setLoading(false);
             });
           }
@@ -33,6 +43,37 @@ function Flashcards() {
 
     fetchData();
   }, []);
+
+  function getFlashcards(search = null) {
+    authFetch(
+      process.env.REACT_APP_API_URL +
+        "/flashcards" +
+        (search ? "?tag=" + search : "")
+    )
+      .then((response) => {
+        if (response.status === 200) {
+          response.json().then((data) => {
+            setFlashcards(data);
+            setLoading(false);
+          });
+        }
+      })
+      .catch(() => {
+        setLoading(false);
+        alertService.error("Error retrieving flashcards.", {
+          autoClose: true,
+          keepAfterRouteChange: false,
+        });
+      });
+  }
+
+  function searchFlashcards(tag) {
+    if (tag) {
+      getFlashcards(tag.value);
+    } else {
+      getFlashcards();
+    }
+  }
 
   function deleteFlashcard(deletedFlashcard) {
     authFetch(
@@ -64,13 +105,24 @@ function Flashcards() {
 
   return (
     <div>
-      <Nav className="justify-content-end pb-3">
-        <Nav.Item>
+      <Row className="pb-3">
+        <Col className="text-left">
+          <Select
+            type="text"
+            placeholder="Search by tag"
+            options={tags.map((t) => {
+              return { label: t.toLowerCase(), value: t.toLowerCase() };
+            })}
+            onChange={searchFlashcards}
+            isClearable={true}
+          />
+        </Col>
+        <Col className="text-right">
           <Button variant="primary" as={Link} to="/flashcards/new">
             New Flashcard
           </Button>
-        </Nav.Item>
-      </Nav>
+        </Col>
+      </Row>
       {loading ? (
         <Loading />
       ) : (

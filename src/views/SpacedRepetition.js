@@ -10,26 +10,30 @@ function SpacedRepetition() {
 
   useEffect(() => {
     function fetchData() {
-      authFetch(process.env.REACT_APP_API_URL + "/flashcards/due")
-        .then((response) => {
-          if (response.status === 200) {
-            response.json().then((data) => {
-              setFlashcards(data);
-              setLoading(false);
-            });
-          }
-        })
-        .catch(() => {
-          setLoading(false);
-          alertService.error("Error retrieving flashcards.", {
-            autoClose: true,
-            keepAfterRouteChange: false,
-          });
-        });
+      getFlashcards();
     }
 
     fetchData();
   }, []);
+
+  function getFlashcards() {
+    authFetch(process.env.REACT_APP_API_URL + "/flashcards/due")
+      .then((response) => {
+        if (response.status === 200) {
+          response.json().then((data) => {
+            setFlashcards(data);
+            setLoading(false);
+          });
+        }
+      })
+      .catch(() => {
+        setLoading(false);
+        alertService.error("Error retrieving flashcards.", {
+          autoClose: true,
+          keepAfterRouteChange: false,
+        });
+      });
+  }
 
   function answerFlashcard(answeredFlashcard, score) {
     authFetch(
@@ -47,11 +51,7 @@ function SpacedRepetition() {
     )
       .then((response) =>
         response.json().then(() => {
-          setFlashcards(
-            flashcards.filter(
-              (flashcard) => flashcard.id !== answeredFlashcard.id
-            )
-          );
+          getFlashcards();
           alertService.success(
             score > 3
               ? "Keep up the great work!"
@@ -76,10 +76,24 @@ function SpacedRepetition() {
       {loading ? (
         <Loading />
       ) : (
-        <SpacedRepetitionList
-          flashcards={flashcards}
-          answerFlashcard={answerFlashcard}
-        ></SpacedRepetitionList>
+        <>
+          <h4>Due</h4>
+          <SpacedRepetitionList
+            notFoundMessage="No flashcards due..."
+            flashcards={flashcards.filter(
+              (f) => new Date(f.date_due).getTime() <= new Date().getTime()
+            )}
+            answerFlashcard={answerFlashcard}
+          ></SpacedRepetitionList>
+          <h4 className="mt-4">Upcoming</h4>
+          <SpacedRepetitionList
+            notFoundMessage="No upcoming flashcards..."
+            flashcards={flashcards.filter(
+              (f) => new Date(f.date_due).getTime() > new Date().getTime()
+            )}
+            answerFlashcard={answerFlashcard}
+          ></SpacedRepetitionList>
+        </>
       )}
     </div>
   );

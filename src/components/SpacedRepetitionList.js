@@ -2,11 +2,15 @@ import React from "react";
 import ListGroup from "react-bootstrap/ListGroup";
 import SpacedRepetition from "./SpacedRepetition";
 
-function SpacedRepetitionList({ flashcards, answerFlashcard }) {
+function SpacedRepetitionList({
+  flashcards,
+  answerFlashcard,
+  notFoundMessage,
+}) {
   return (
     <ListGroup>
       {flashcards.length === 0 ? (
-        <p>No spaced repetition due...</p>
+        <p>{notFoundMessage}</p>
       ) : (
         flashcards.map((flashcard) => (
           <SpacedRepetition
