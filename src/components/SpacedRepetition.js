@@ -20,7 +20,6 @@ class SpacedRepetition extends React.Component {
     this.state = {
       front: true,
       score: "",
-      dueDate: startOfDay(new Date(this.props.flashcard.date_due)),
     };
     this.toggleFlashcard = this.toggleFlashcard.bind(this);
     this.handleViewClick = this.handleViewClick.bind(this);
@@ -51,17 +50,18 @@ class SpacedRepetition extends React.Component {
     this.setState({ front: !this.state.front, score: "" });
   }
 
-  getDueDate() {
-    const { dueDate } = this.state;
-    const dayDifference = differenceInDays(new Date(), new Date(dueDate));
+  getDueDate(dueDate) {
+    const due = startOfDay(new Date(dueDate));
+    const now = startOfDay(new Date());
+    const dayDifference = differenceInDays(now, due);
 
-    if (isToday(dueDate)) {
+    if (isToday(due)) {
       return "Today";
     }
-    if (isTomorrow(dueDate)) {
+    if (isTomorrow(due)) {
       return "Tomorrow";
     }
-    if (isYesterday(dueDate)) {
+    if (isYesterday(due)) {
       return "Yesterday";
     }
     if (dayDifference < -1) {
@@ -72,17 +72,18 @@ class SpacedRepetition extends React.Component {
     }
   }
 
-  getDueDateColour() {
-    const { dueDate } = this.state;
-    const dayDifference = differenceInDays(new Date(), new Date(dueDate));
+  getDueDateColour(dueDate) {
+    const due = startOfDay(new Date(dueDate));
+    const now = startOfDay(new Date());
+    const dayDifference = differenceInDays(now, due);
 
-    if (isToday(dueDate)) {
+    if (isToday(due)) {
       return "primary";
     }
-    if (isTomorrow(dueDate)) {
+    if (isTomorrow(due)) {
       return "light";
     }
-    if (isYesterday(dueDate)) {
+    if (isYesterday(due)) {
       return "warning";
     }
     if (dayDifference < -1) {
@@ -95,7 +96,7 @@ class SpacedRepetition extends React.Component {
 
   render() {
     return (
-      <Card border={this.getDueDateColour()}>
+      <Card border={this.getDueDateColour(this.props.flashcard.date_due)}>
         <Card.Body>
           <Row className="pb-3">
             <Col>
@@ -106,14 +107,17 @@ class SpacedRepetition extends React.Component {
               )}
             </Col>
             <Col className="text-right">
-              <Badge pill variant={this.getDueDateColour()}>
-                {this.getDueDate()}
+              <Badge
+                pill
+                variant={this.getDueDateColour(this.props.flashcard.date_due)}
+              >
+                {this.getDueDate(this.props.flashcard.date_due)}
               </Badge>
             </Col>
           </Row>
           {this.state.front ? (
             <Button
-              variant={this.getDueDateColour()}
+              variant={this.getDueDateColour(this.props.flashcard.date_due)}
               onClick={this.toggleFlashcard}
             >
               {this.state.front ? "Show Answer" : "Show Question"}
@@ -153,7 +157,7 @@ class SpacedRepetition extends React.Component {
                   onChange={this.handleScore}
                 />
                 <Form.Check
-                  label="I was incorrect but sort of remembered the correct answer"
+                  label="I was incorrect but sort of recognised the correct answer"
                   value="1"
                   type="radio"
                   checked={this.state.score === "1"}
@@ -168,7 +172,7 @@ class SpacedRepetition extends React.Component {
                 />
               </Form.Group>
               <Button
-                variant={this.getDueDateColour()}
+                variant={this.getDueDateColour(this.props.flashcard.date_due)}
                 disabled={!this.state.score}
                 onClick={this.handleAnswer}
               >

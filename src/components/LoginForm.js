@@ -1,5 +1,5 @@
 import React from "react";
-import { withRouter } from "react-router-dom";
+import { NavLink, withRouter } from "react-router-dom";
 import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
@@ -110,6 +110,9 @@ class Login extends React.Component {
                 />
               )}
               Login
+            </Button>
+            <Button variant="link" as={NavLink} to="/register">
+              No account? Register here!
             </Button>
           </Form>
         </Card.Body>

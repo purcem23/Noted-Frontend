@@ -5234,6 +5234,11 @@ fragment-cache@^0.2.1:
   dependencies:
     map-cache "^0.2.2"
 
+frappe-charts@^1.6.1:
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/frappe-charts/-/frappe-charts-1.6.1.tgz#2162cec05f4524b10cf232df8787a3ac20218384"
+  integrity sha512-Fteae/oqv4XdxP4ALoqTmUBBvXt8ECtghziqabp1ZA4yLqY8a3haafNqluwUCxnBOvrV+EdpvhZu0H+VEebX1Q==
+
 fresh@0.5.2:
   version "0.5.2"
   resolved "https://registry.yarnpkg.com/fresh/-/fresh-0.5.2.tgz#3d8cadd90d976569fa835ab1f8e4b23a105605a7"
@@ -9319,6 +9324,11 @@ react-error-overlay@^6.0.8:
   version "6.0.8"
   resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-6.0.8.tgz#474ed11d04fc6bda3af643447d85e9127ed6b5de"
   integrity sha512-HvPuUQnLp5H7TouGq3kzBeioJmXms1wHy9EGjz2OURWBp4qZO6AfGEcnxts1D/CbwPLRAgTMPCEgYhA3sEM4vw==
+
+react-frappe-charts@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/react-frappe-charts/-/react-frappe-charts-4.0.0.tgz#5a9958641ac0e74ce4c44a23788a5e879ac716a7"
+  integrity sha512-QmYY1ExlPidE8DK3jtjGWakP0YptHOlFMoYF4/Qxsbrw5hYMCwocPoco4b3e2qk6mI0trdpzILzpjmFWutO/MA==
 
 react-input-autosize@^3.0.0:
   version "3.0.0"

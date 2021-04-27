@@ -31,6 +31,9 @@ function Menubar({ history }) {
           <Nav.Link as={NavLink} to="/spaced-repetition">
             Spaced Repetition
           </Nav.Link>
+          <Nav.Link as={NavLink} to="/insights">
+            Insights
+          </Nav.Link>
         </Nav>
         <Nav className="ml-auto">
           <Nav.Link className="text-light d-none d-lg-block" disabled>

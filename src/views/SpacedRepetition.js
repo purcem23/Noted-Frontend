@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { differenceInDays, startOfDay } from "date-fns";
 import { authFetch } from "../auth";
 import { alertService } from "../services";
 import Loading from "../components/Loading";
@@ -81,7 +82,11 @@ function SpacedRepetition() {
           <SpacedRepetitionList
             notFoundMessage="No flashcards due..."
             flashcards={flashcards.filter(
-              (f) => new Date(f.date_due).getTime() <= new Date().getTime()
+              (f) =>
+                differenceInDays(
+                  startOfDay(new Date()),
+                  startOfDay(new Date(f.date_due))
+                ) >= 0
             )}
             answerFlashcard={answerFlashcard}
           ></SpacedRepetitionList>
@@ -89,7 +94,11 @@ function SpacedRepetition() {
           <SpacedRepetitionList
             notFoundMessage="No upcoming flashcards..."
             flashcards={flashcards.filter(
-              (f) => new Date(f.date_due).getTime() > new Date().getTime()
+              (f) =>
+                differenceInDays(
+                  startOfDay(new Date()),
+                  startOfDay(new Date(f.date_due))
+                ) < 0
             )}
             answerFlashcard={answerFlashcard}
           ></SpacedRepetitionList>

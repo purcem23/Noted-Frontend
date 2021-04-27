@@ -8,7 +8,7 @@ function SpacedRepetitionList({
   notFoundMessage,
 }) {
   return (
-    <ListGroup>
+    <ListGroup style={{ minHeight: "250px" }}>
       {flashcards.length === 0 ? (
         <p>{notFoundMessage}</p>
       ) : (

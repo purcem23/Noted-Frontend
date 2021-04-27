@@ -7,8 +7,17 @@ import Badge from "react-bootstrap/Badge";
 class Flashcard extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      front: true,
+    };
+    this.toggleFlashcard = this.toggleFlashcard.bind(this);
     this.handleDeleteClick = this.handleDeleteClick.bind(this);
     this.handleViewClick = this.handleViewClick.bind(this);
+  }
+
+  toggleFlashcard(event) {
+    event.stopPropagation();
+    this.setState({ front: !this.state.front });
   }
 
   handleDeleteClick(event) {
@@ -23,9 +32,12 @@ class Flashcard extends React.Component {
   render() {
     return (
       <Card style={{ cursor: "pointer" }} onClick={this.handleViewClick}>
-        <Card.Header>{this.props.flashcard.front}</Card.Header>
         <Card.Body>
-          <Card.Text>{this.props.flashcard.back}</Card.Text>
+          <Card.Text>
+            {this.state.front
+              ? this.props.flashcard.front
+              : this.props.flashcard.back}
+          </Card.Text>
           <Card.Text>
             {this.props.flashcard.tags.map((tag, index) => (
               <Badge key={index} className="mr-1" pill variant="secondary">
@@ -33,7 +45,14 @@ class Flashcard extends React.Component {
               </Badge>
             ))}
           </Card.Text>
-          <Button variant="outline-danger" onClick={this.handleDeleteClick}>
+          <Button variant="primary" onClick={this.toggleFlashcard}>
+            {this.state.front ? "Show Answer" : "Show Question"}
+          </Button>
+          <Button
+            className="ml-2"
+            variant="outline-danger"
+            onClick={this.handleDeleteClick}
+          >
             Delete
           </Button>
         </Card.Body>
