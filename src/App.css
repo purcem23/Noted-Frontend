@@ -16,3 +16,19 @@
   margin: auto;
   z-index: 100;
 }
+
+.no-data {
+  height: 250px;
+  border: 3px dashed #eeeeee;
+}
+
+.chart-tooltip {
+  background-color: #ffffff;
+  opacity: 0.7;
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}

@@ -7,3 +7,4 @@ export * from "./Note";
 export * from "./Notes";
 export * from "./SpacedRepetition";
 export * from "./Insights";
+export * from "./Test";

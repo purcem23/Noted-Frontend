@@ -4,8 +4,9 @@ import Select from "react-select";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
-import { authFetch } from "../auth";
+import { authFetch, logout } from "../auth";
 import { alertService } from "../services";
+import { history } from "../helpers";
 import Loading from "../components/Loading";
 import FlashcardList from "../components/FlashcardList";
 
@@ -30,6 +31,14 @@ function Flashcards() {
               ]);
               setLoading(false);
             });
+          }
+          if (response.status === 401) {
+            logout();
+            alertService.success("Session expired! Please log in again.", {
+              autoClose: true,
+              keepAfterRouteChange: true,
+            });
+            history.push("/login");
           }
         })
         .catch(() => {
@@ -57,6 +66,14 @@ function Flashcards() {
             setLoading(false);
           });
         }
+        if (response.status === 401) {
+          logout();
+          alertService.success("Session expired! Please log in again.", {
+            autoClose: true,
+            keepAfterRouteChange: true,
+          });
+          history.push("/login");
+        }
       })
       .catch(() => {
         setLoading(false);
@@ -82,8 +99,8 @@ function Flashcards() {
         method: "DELETE",
       }
     )
-      .then((response) =>
-        response.json().then(() => {
+      .then((response) => {
+        if (response.status === 200) {
           setFlashcards(
             flashcards.filter(
               (flashcard) => flashcard.id !== deletedFlashcard.id
@@ -93,8 +110,16 @@ function Flashcards() {
             autoClose: true,
             keepAfterRouteChange: false,
           });
-        })
-      )
+        }
+        if (response.status === 401) {
+          logout();
+          alertService.success("Session expired! Please log in again.", {
+            autoClose: true,
+            keepAfterRouteChange: true,
+          });
+          history.push("/login");
+        }
+      })
       .catch(() => {
         alertService.error("Error deleting flashcard. Please try again.", {
           autoClose: true,

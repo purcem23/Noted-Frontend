@@ -65,7 +65,6 @@ class Register extends React.Component {
             }
           })
           .catch((e) => {
-            console.error(e);
             this.setState({ loading: false });
             alertService.error("Error registering in. Please try again.", {
               autoClose: true,

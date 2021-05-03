@@ -62,7 +62,6 @@ class Login extends React.Component {
           }
         })
         .catch((e) => {
-          console.error(e);
           this.setState({ loading: false });
           alertService.error("Error logging in. Please try again.", {
             autoClose: true,

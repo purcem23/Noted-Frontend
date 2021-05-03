@@ -16,6 +16,7 @@ import {
   Flashcards,
   SpacedRepetition,
   Insights,
+  Test,
 } from "./views";
 import "./App.css";
 
@@ -32,7 +33,8 @@ function App() {
             {logged ? (
               <>
                 <AuthRoute path="/notes" component={Notes} exact />
-                <AuthRoute path="/notes/:noteId" component={Note} />
+                <AuthRoute path="/notes/:noteId" component={Note} exact />
+                <AuthRoute path="/notes/:noteId/test" component={Test} exact />
                 <AuthRoute path="/flashcards" component={Flashcards} exact />
                 <AuthRoute
                   path="/flashcards/:flashcardId"

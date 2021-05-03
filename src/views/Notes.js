@@ -4,8 +4,9 @@ import Select from "react-select";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
-import { authFetch } from "../auth";
+import { authFetch, logout } from "../auth";
 import { alertService } from "../services";
+import { history } from "../helpers";
 import Loading from "../components/Loading";
 import NoteList from "../components/NoteList";
 
@@ -30,6 +31,14 @@ function Notes() {
               ]);
               setLoading(false);
             });
+          }
+          if (response.status === 401) {
+            logout();
+            alertService.success("Session expired! Please log in again.", {
+              autoClose: true,
+              keepAfterRouteChange: true,
+            });
+            history.push("/login");
           }
         })
         .catch(() => {
@@ -57,6 +66,14 @@ function Notes() {
             setLoading(false);
           });
         }
+        if (response.status === 401) {
+          logout();
+          alertService.success("Session expired! Please log in again.", {
+            autoClose: true,
+            keepAfterRouteChange: true,
+          });
+          history.push("/login");
+        }
       })
       .catch(() => {
         setLoading(false);
@@ -83,8 +100,8 @@ function Notes() {
         headers: { "Content-type": "application/json; charset=UTF-8" },
       }
     )
-      .then((response) =>
-        response.json().then(() => {
+      .then((response) => {
+        if (response.status === 200) {
           setNotes(
             notes.map((note) => {
               if (note.id === finishedNote.id) {
@@ -103,8 +120,16 @@ function Notes() {
               keepAfterRouteChange: false,
             }
           );
-        })
-      )
+        }
+        if (response.status === 401) {
+          logout();
+          alertService.success("Session expired! Please log in again.", {
+            autoClose: true,
+            keepAfterRouteChange: true,
+          });
+          history.push("/login");
+        }
+      })
       .catch(() => {
         alertService.error(
           `Error marking <strong>${finishedNote.name}</strong> as complete. Please try again.`,
@@ -127,8 +152,8 @@ function Notes() {
         headers: { "Content-type": "application/json; charset=UTF-8" },
       }
     )
-      .then((response) =>
-        response.json().then(() => {
+      .then((response) => {
+        if (response.status === 200) {
           setNotes(
             notes.map((note) => {
               if (note.id === unfinishedNote.id) {
@@ -147,8 +172,16 @@ function Notes() {
               keepAfterRouteChange: false,
             }
           );
-        })
-      )
+        }
+        if (response.status === 401) {
+          logout();
+          alertService.success("Session expired! Please log in again.", {
+            autoClose: true,
+            keepAfterRouteChange: true,
+          });
+          history.push("/login");
+        }
+      })
       .catch(() => {
         alertService.error(
           `Error marking <strong>${unfinishedNote.name}</strong> as incomplete. Please try again.`,
@@ -164,8 +197,8 @@ function Notes() {
     authFetch(process.env.REACT_APP_API_URL + "/notes/" + deletedNote.id, {
       method: "DELETE",
     })
-      .then((response) =>
-        response.json().then(() => {
+      .then((response) => {
+        if (response.status === 200) {
           setNotes(notes.filter((note) => note.id !== deletedNote.id));
           alertService.success(
             `Successfully deleted <strong>${deletedNote.name}</strong>.`,
@@ -174,8 +207,16 @@ function Notes() {
               keepAfterRouteChange: false,
             }
           );
-        })
-      )
+        }
+        if (response.status === 401) {
+          logout();
+          alertService.success("Session expired! Please log in again.", {
+            autoClose: true,
+            keepAfterRouteChange: true,
+          });
+          history.push("/login");
+        }
+      })
       .catch(() => {
         alertService.error(
           `Error deleting <strong>${deletedNote.name}</strong>. Please try again.`,

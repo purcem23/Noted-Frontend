@@ -7,8 +7,9 @@ import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
 import Badge from "react-bootstrap/Badge";
 import TextareaAutosize from "react-textarea-autosize";
-import { authFetch } from "../auth";
+import { authFetch, logout } from "../auth";
 import { alertService } from "../services";
+import { history } from "../helpers";
 
 class FlashcardDisplay extends React.Component {
   constructor(props) {
@@ -55,12 +56,22 @@ class FlashcardDisplay extends React.Component {
           }),
         }
       )
-        .then(() => {
-          this.setState({ loading: false });
-          alertService.success("Flashcard successfully updated!", {
-            autoClose: true,
-            keepAfterRouteChange: false,
-          });
+        .then((response) => {
+          if (response.status === 200) {
+            this.setState({ loading: false });
+            alertService.success("Flashcard successfully updated!", {
+              autoClose: true,
+              keepAfterRouteChange: false,
+            });
+          }
+          if (response.status === 401) {
+            logout();
+            alertService.success("Session expired! Please log in again.", {
+              autoClose: true,
+              keepAfterRouteChange: true,
+            });
+            history.push("/login");
+          }
         })
         .catch(() => {
           this.setState({ loading: false });
@@ -78,13 +89,23 @@ class FlashcardDisplay extends React.Component {
           back: this.state.back,
         }),
       })
-        .then(() => {
-          this.setState({ loading: false });
-          alertService.success("Flashcard successfully created!", {
-            autoClose: true,
-            keepAfterRouteChange: true,
-          });
-          this.props.history.push("/flashcards");
+        .then((response) => {
+          if (response.status === 201) {
+            this.setState({ loading: false });
+            alertService.success("Flashcard successfully created!", {
+              autoClose: true,
+              keepAfterRouteChange: true,
+            });
+            this.props.history.push("/flashcards");
+          }
+          if (response.status === 401) {
+            logout();
+            alertService.success("Session expired! Please log in again.", {
+              autoClose: true,
+              keepAfterRouteChange: true,
+            });
+            history.push("/login");
+          }
         })
         .catch(() => {
           this.setState({ loading: false });

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { differenceInDays, startOfDay } from "date-fns";
-import { authFetch } from "../auth";
+import { authFetch, logout } from "../auth";
 import { alertService } from "../services";
+import { history } from "../helpers";
 import Loading from "../components/Loading";
 import SpacedRepetitionList from "../components/SpacedRepetitionList";
 
@@ -25,6 +26,14 @@ function SpacedRepetition() {
             setFlashcards(data);
             setLoading(false);
           });
+        }
+        if (response.status === 401) {
+          logout();
+          alertService.success("Session expired! Please log in again.", {
+            autoClose: true,
+            keepAfterRouteChange: true,
+          });
+          history.push("/login");
         }
       })
       .catch(() => {
@@ -52,16 +61,26 @@ function SpacedRepetition() {
     )
       .then((response) =>
         response.json().then(() => {
-          getFlashcards();
-          alertService.success(
-            score > 3
-              ? "Keep up the great work!"
-              : "I know you will do better next time.",
-            {
+          if (response.status === 200) {
+            getFlashcards();
+            alertService.success(
+              score > 3
+                ? "Keep up the great work!"
+                : "I know you will do better next time.",
+              {
+                autoClose: true,
+                keepAfterRouteChange: false,
+              }
+            );
+          }
+          if (response.status === 401) {
+            logout();
+            alertService.success("Session expired! Please log in again.", {
               autoClose: true,
-              keepAfterRouteChange: false,
-            }
-          );
+              keepAfterRouteChange: true,
+            });
+            history.push("/login");
+          }
         })
       )
       .catch(() => {

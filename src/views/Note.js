@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Loading from "../components/Loading";
 import NoteDisplay from "../components/NoteDisplay";
-import { authFetch } from "../auth";
+import { authFetch, logout } from "../auth";
 import { alertService } from "../services";
+import { history } from "../helpers";
 
 function Note({ token }) {
   const { noteId } = useParams();
@@ -21,6 +22,14 @@ function Note({ token }) {
                 setNote(data);
                 setLoading(false);
               });
+            }
+            if (response.status === 401) {
+              logout();
+              alertService.success("Session expired! Please log in again.", {
+                autoClose: true,
+                keepAfterRouteChange: true,
+              });
+              history.push("/login");
             }
           })
           .catch(() => {
