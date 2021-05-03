@@ -139,17 +139,19 @@ class NoteDisplay extends React.Component {
   render() {
     return (
       <>
-        <Row className="pb-3">
-          <Col className="text-right">
-            <Button
-              variant="primary"
-              as={Link}
-              to={"/notes/" + this.props.id + "/test"}
-            >
-              Mock Test
-            </Button>
-          </Col>
-        </Row>
+        {this.state.summary && (
+          <Row className="pb-3">
+            <Col className="text-right">
+              <Button
+                variant="primary"
+                as={Link}
+                to={"/notes/" + this.props.id + "/test"}
+              >
+                Mock Test
+              </Button>
+            </Col>
+          </Row>
+        )}
         <ListGroup>
           {this.state.summary && (
             <Card>

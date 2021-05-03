@@ -17,8 +17,13 @@ const CustomTooltip = ({ active, payload, label }) => {
         <div>
           <strong>{label}</strong>
         </div>
+        <hr className="my-2"></hr>
         <div>Repetitions: {payload[0].payload.repetitions}</div>
         <div>Score: {payload[0].payload.score}</div>
+        <hr className="my-2"></hr>
+        <div>
+          <strong>{getStatMessage(payload[0].payload.score)}</strong>
+        </div>
       </div>
     );
   }
@@ -26,12 +31,26 @@ const CustomTooltip = ({ active, payload, label }) => {
   return null;
 };
 
+const getStatMessage = (score) => {
+  if (score < 1) {
+    return "This needs serious work!";
+  } else if (score >= 1 && score < 2) {
+    return "You need to study more!";
+  } else if (score >= 2 && score < 3) {
+    return "You can do better.";
+  } else if (score >= 3 && score < 4) {
+    return "Keep up the great work.";
+  } else if (score >= 4) {
+    return "Perfect, don't change a thing.";
+  }
+};
+
 const scores = [
-  { label: "1", colour: "#ea868f" },
-  { label: "2 ", colour: "#feb272" },
-  { label: "3", colour: "#ffda6a" },
-  { label: "4", colour: "#79dfc1" },
-  { label: "5", colour: "#75b798" },
+  { label: "Poor", colour: "#ea868f" },
+  { label: "Fair", colour: "#feb272" },
+  { label: "Good", colour: "#ffda6a" },
+  { label: "Very Good", colour: "#79dfc1" },
+  { label: "Excellent", colour: "#75b798" },
 ];
 
 class Stats extends React.Component {
@@ -82,7 +101,6 @@ class Stats extends React.Component {
               </BarChart>
             </ResponsiveContainer>
             <div>
-              <span className="mr-2">Scores:</span>
               {scores.map(({ label, colour }) => (
                 <span key={label} className="mr-3">
                   <span
