@@ -9,7 +9,7 @@ function Loading(props) {
   React.useEffect(() => {
     let timeout;
     if (messages && messageIndex < messages.length - 1) {
-      timeout = setTimeout(() => setMessageIndex(messageIndex + 1), 3000);
+      timeout = setTimeout(() => setMessageIndex(messageIndex + 1), 1000);
     }
 
     return () => {

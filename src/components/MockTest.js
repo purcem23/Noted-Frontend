@@ -1,5 +1,7 @@
 import React from "react";
 import { withRouter, Link } from "react-router-dom";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
 import ProgressBar from "react-bootstrap/ProgressBar";
@@ -59,11 +61,21 @@ class MockTest extends React.Component {
     const { currentQuestionNumber, currentQuestionIndex } = this.state;
     const newQuestionNumber = currentQuestionNumber - 1;
     const newQuestionIndex = currentQuestionIndex - 1;
-    this.setState({
-      currentQuestionNumber: newQuestionNumber,
-      currentQuestionIndex: newQuestionIndex,
-      currentQuestion: this.props.test[newQuestionIndex],
-    });
+
+    if (newQuestionIndex === -1) {
+      this.setState({
+        currentQuestionNumber: 0,
+        currentQuestionIndex: -1,
+        currentQuestion: null,
+        begin: true,
+      });
+    } else {
+      this.setState({
+        currentQuestionNumber: newQuestionNumber,
+        currentQuestionIndex: newQuestionIndex,
+        currentQuestion: this.props.test[newQuestionIndex],
+      });
+    }
   }
 
   incrementQuestionNumber() {
@@ -159,7 +171,14 @@ class MockTest extends React.Component {
               </Button>
               {this.state.currentQuestionNumber ===
               this.state.totalQuestions ? (
-                <Button onClick={this.finishTest}>Finish</Button>
+                <Button
+                  disabled={
+                    !this.state.answers[this.state.currentQuestionIndex]
+                  }
+                  onClick={this.finishTest}
+                >
+                  Finish
+                </Button>
               ) : (
                 <Button
                   disabled={
@@ -187,15 +206,27 @@ class MockTest extends React.Component {
                 return (
                   <ListGroup.Item key={index}>
                     {answer.correct ? (
-                      <h5 className="text-success">
-                        <CheckCircleFill className="mr-2" /> Question{" "}
-                        {index + 1}
-                      </h5>
+                      <Row className="text-success">
+                        <Col>
+                          <CheckCircleFill className="mr-2" size="14" />
+                          <h6 className="align-middle d-inline-block mb-0">
+                            Question {index + 1}
+                          </h6>
+                        </Col>
+                      </Row>
                     ) : (
-                      <h5 className="text-danger">
-                        <XCircleFill className="mr-2" /> Question {index + 1}
-                      </h5>
+                      <Row className="text-danger">
+                        <Col>
+                          <XCircleFill className="mr-2" size="14" />
+                          <h6 className="align-middle d-inline-block mb-0">
+                            Question {index + 1}
+                          </h6>
+                        </Col>
+                      </Row>
                     )}
+                    <div className="my-3">
+                      {this.props.test[index].question}
+                    </div>
                     <div>Your answer: {answer.userAnswer}</div>
                     <div>
                       <strong>Correct answer: {answer.correctAnswer}</strong>
